@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NavLevel Development</title>
+  <link rel="stylesheet" href="node_modules\@wikimedia\codex\dist\codex.style.css"/>
+</head>
+<body style="background-color: #aaa;">
+  <div class="mw-parser-output">
+    <div class="navlevel-sortable navbox navbox-level-0 navlevel-sortable collapsible stikitable hlist" style="--navbox-hue:108; --navbox-saturation:70%;"><div class="navbox-cell navbox-sole-row navbox-title navbox-title-with-navbar stikitable-cell collapsible-always-show"><span class="hlist navbar navbar-mini"><ul><li class="nv-view"><a href="/wiki/Template:%E5%85%B3%E5%8D%A1" title="Template:关卡"><abbr title="查看该模板">查</abbr></a></li><li class="nv-talk"><a href="/wiki/Template_talk:%E5%85%B3%E5%8D%A1" title="Template talk:关卡"><abbr title="讨论该模板">论</abbr></a></li><li class="nv-edit"><a href="/wiki/Special:%E7%BC%96%E8%BE%91%E9%A1%B5%E9%9D%A2/Template:%E5%85%B3%E5%8D%A1" title="Special:编辑页面/Template:关卡"><abbr title="编辑此模板">编</abbr></a></li></ul></span><span class="navbox-title-content"><a href="/wiki/%E5%85%B3%E5%8D%A1" title="关卡">关卡</a></span><span class="collapsetoggle">[<a class="jsLink" role="button" tabindex="0" title="折叠">折叠</a>]</span></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner"><a href="/wiki/%E5%85%B3%E5%8D%A1#官方关卡" title="关卡">官方</a></span></div><div class="navbox-list navbox-cell navbox navbox-level-1 mobileplainbox"><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">1 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+<ul><li><a href="/wiki/%E4%BA%91" title="云">云</a></li>
+<li><a href="/wiki/%E6%99%B4%E5%A4%A9" title="晴天">晴天</a></li>
+<li><a href="/wiki/%E7%83%AD%E5%B8%A6%E6%BD%AE%E6%B1%90" title="热带潮汐">热带潮汐</a></li>
+<li><a href="/wiki/%E8%9C%9C%E5%A2%83" title="蜜境">蜜境</a></li>
+<li><a href="/wiki/%E5%B1%B1%E4%B8%98" title="山丘">山丘</a></li>
+<li><a href="/wiki/%E6%98%9F%E5%9F%9F" title="星域">星域</a></li>
+<li><a href="/wiki/%E5%8E%9F%E5%AD%90%E8%83%BD" title="原子能">原子能</a></li>
+<li><a href="/wiki/%E5%86%AC%E6%97%A5" title="冬日">冬日</a></li>
+<li><a href="/wiki/%E6%B5%B7%E5%95%B8" title="海啸">海啸</a></li>
+<li><a href="/wiki/%E5%B9%BB%E6%83%B3" title="幻想">幻想</a></li>
+<li><a href="/wiki/%E5%90%AF%E6%98%8E%E6%98%9F" title="启明星">启明星</a></li>
+<li><a href="/wiki/%E9%AA%B7%E9%AB%85%E6%B4%BE%E5%AF%B9" title="骷髅派对">骷髅派对</a></li>
+<li><a href="/wiki/%E8%9B%9B%E7%BD%91" title="蛛网">蛛网</a></li>
+<li><a href="/wiki/%E8%8D%B7%E9%B2%81%E6%96%AF%E4%B9%8B%E7%9C%BC" title="荷鲁斯之眼">荷鲁斯之眼</a></li>
+<li><a href="/wiki/%E5%8D%97%E7%93%9C%E7%81%AF" title="南瓜灯">南瓜灯</a></li>
+<li><a href="/wiki/%E6%B0%B8%E6%81%92" title="永恒">永恒</a></li>
+<li><a href="/wiki/%E7%A9%BA%E9%97%B4%E7%AB%99" title="空间站">空间站</a></li>
+<li><a href="/wiki/%E5%B0%8F%E4%B8%91%E4%B9%90%E5%9B%AD" title="小丑乐园">小丑乐园</a></li>
+<li><a href="/wiki/%E8%BD%A6%E9%97%B4" title="车间">车间</a></li>
+<li><a href="/wiki/8%E6%AF%94%E7%89%B9" title="8比特">8 比特</a></li>
+<li><a href="/wiki/%E9%9F%B3%C2%B7%E6%82%A6" title="音·悦">音·悦</a></li></ul></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">2 星</span></div><div class="navbox-list navbox-cell navbox-even">
+<li><a href="/wiki/%E5%A4%A9%E7%A9%BA" title="天空">天空</a></li>
+<li><a href="/wiki/%E4%B8%87%E5%9C%A3%E8%8A%82%E9%80%83%E7%94%9F" title="万圣节逃生">万圣节逃生</a></li>
+<li><a href="/wiki/%E7%AB%A5%E8%AF%9D" title="童话">童话</a></li>
+<li><a href="/wiki/%E7%8B%82%E7%83%AD%E6%B4%BE%E5%AF%B9" title="狂热派对">狂热派对</a></li>
+<li><a href="/wiki/%E5%B9%BB%E5%BD%B1%E9%98%B5" title="幻影阵">幻影阵</a></li>
+<li><a href="/wiki/%E9%9B%AA%E5%A4%9C" title="雪夜">雪夜</a></li>
+<li><a href="/wiki/%E5%BA%99%E4%BC%9A" title="庙会">庙会</a></li>
+<li><a href="/wiki/%E7%8E%8B%E7%89%8C" title="王牌">王牌</a></li>
+<li><a href="/wiki/%E7%AB%8B%E6%96%B9%E5%B7%A5%E5%9D%8A" title="立方工坊">立方工坊</a></li>
+<li><a href="/wiki/%E6%BF%80%E5%85%89%E4%B9%8B%E5%9F%8E" title="激光之城">激光之城</a></li>
+<li><a href="/wiki/%E6%9E%81%E9%80%9F%E6%8C%91%E6%88%98" title="极速挑战">极速挑战</a></li>
+<li><a href="/wiki/%E9%87%91%E8%89%B2%E5%9C%A3%E8%AF%9E%E8%8A%82" title="金色圣诞节">金色圣诞节</a></li>
+<li><a href="/wiki/%E7%81%AF%E7%A5%9E" title="灯神">灯神</a></li>
+<li><a href="/wiki/%E7%82%AB%E5%85%89" title="炫光">炫光</a></li>
+<li><a href="/wiki/%E6%A8%B1%E8%90%BD" title="樱落">樱落</a></li>
+<li><a href="/wiki/%E8%8D%92%E5%8C%BA" title="荒区">荒区</a></li>
+<li><a href="/wiki/Alone_Remix" title="Alone Remix">Alone Remix</a></li>
+<li><a href="/wiki/%E6%98%9F%E8%BE%B0" title="星辰">星辰</a></li>
+<li><a href="/wiki/%E6%A1%91%E5%B7%B4" title="桑巴">桑巴</a></li>
+<li><a href="/wiki/%E6%B0%B8%E6%81%92%E4%B9%8B%E6%97%85" title="永恒之旅">永恒之旅</a></li>
+<li><a href="/wiki/%E6%B7%B1%E6%B8%8A%E9%99%B7%E9%98%B1" title="深渊陷阱">深渊陷阱</a></li>
+<li><a href="/wiki/%E8%BF%B7%E8%B8%AA" title="迷踪">迷踪</a></li>
+<li><a href="/wiki/%E7%BB%BF%E8%8C%B5%E6%88%98%E5%9C%BA" title="绿茵战场">绿茵战场</a></li>
+<li><a href="/wiki/%E8%93%84%E8%83%BD%E5%99%A8" title="蓄能器">蓄能器</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">3 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+<li><a href="/wiki/%E8%B5%9E%E6%AD%8C" title="赞歌">赞歌</a></li>
+<li><a href="/wiki/%E6%97%B6%E5%85%89%E6%9C%BA" title="时光机">时光机</a></li>
+<li><a href="/wiki/%E6%B5%B7%E5%BA%95%E4%B8%96%E7%95%8C" title="海底世界">海底世界</a></li>
+<li><a href="/wiki/%E6%B5%AA%E6%BC%AB%E5%8D%88%E5%90%8E" title="浪漫午后">浪漫午后</a></li>
+<li><a href="/wiki/%E5%8F%8C%E5%AD%90%E6%98%9F" title="双子星">双子星</a></li>
+<li><a href="/wiki/%E5%BD%B1%E6%AD%A6%E5%A3%AB" title="影武士">影武士</a></li>
+<li><a href="/wiki/%E6%A3%AE%E6%9E%97" title="森林">森林</a></li>
+<li><a href="/wiki/%E7%B3%96%E6%9E%9C" title="糖果">糖果</a></li>
+<li><a href="/wiki/Faded" title="Faded">Faded</a></li>
+<li><a href="/wiki/%E5%9B%BE%E8%85%BE" title="图腾">图腾</a></li>
+<li><a href="/wiki/%E5%AF%B9%E5%BC%88%E7%BA%B5%E6%A8%AA" title="对弈纵横">对弈纵横</a></li>
+<li><a href="/wiki/%E6%88%98%E6%96%97%E5%A0%A1%E5%9E%92" title="战斗堡垒">战斗堡垒</a></li>
+<li><a href="/wiki/%E7%94%B5%E7%8E%A9%E5%9F%8E" title="电玩城">电玩城</a></li>
+<li><a href="/wiki/%E5%BD%A9%E8%99%B9%E5%9F%8E%E5%A0%A1" title="彩虹城堡">彩虹城堡</a></li>
+<li><a href="/wiki/%E6%B2%99%E6%BC%A0" title="沙漠">沙漠</a></li>
+<li><a href="/wiki/%E9%A3%8E%E9%9B%A8%E5%90%8C%E8%A1%8C" title="风雨同行">风雨同行</a></li>
+<li><a href="/wiki/%E7%84%B0%E7%81%AB" title="焰火">焰火</a></li>
+<li><a href="/wiki/%E5%86%A0%E5%86%9B%E8%B5%9B" title="冠军赛">冠军赛</a></li>
+<li><a href="/wiki/%E4%BA%A1%E7%81%B5%E4%B9%8B%E8%88%9E" title="亡灵之舞">亡灵之舞</a></li>
+<li><a href="/wiki/%E5%8D%88%E5%A4%9C%E5%B7%A1%E6%B8%B8" title="午夜巡游">午夜巡游</a></li>
+<li><a href="/wiki/%E5%8A%A8%E6%84%9F%E6%96%B9%E5%9D%97" title="动感方块">动感方块</a></li>
+<li><a href="/wiki/%E5%BD%BC%E5%B2%B8" title="彼岸">彼岸</a></li>
+<li><a href="/wiki/%E5%8A%9F%E5%A4%AB" title="功夫">功夫</a></li>
+<li><a href="/wiki/Faded_Remix" title="Faded Remix">Faded Remix</a></li>
+<li><a href="/wiki/Alone" title="Alone">Alone</a></li>
+<li><a href="/wiki/%E7%9F%A9%E9%98%B5%E6%B5%AA%E6%BD%AE" title="矩阵浪潮">矩阵浪潮</a></li>
+<li><a href="/wiki/%E5%A5%87%E5%A6%99%E7%94%9C%E5%93%81%E5%B1%8B" title="奇妙甜品屋">奇妙甜品屋</a></li>
+<li><a href="/wiki/%E6%8D%A3%E8%9B%8B%E8%8A%82" title="捣蛋节">捣蛋节</a></li>
+<li><a href="/wiki/%E6%9C%BA%E5%8A%A8%E6%A0%B8%E5%BF%83" title="机动核心">机动核心</a></li>
+<li><a href="/wiki/%E6%A0%BC%E8%B5%AB%E7%BD%97%E6%96%AF" title="格赫罗斯">格赫罗斯</a></li>
+<li><a href="/wiki/%E5%91%A8%E5%B9%B4%E5%BA%86" title="周年庆">周年庆</a></li>
+<li><a href="/wiki/%E9%87%8D%E7%94%9F" title="重生">重生</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">4 星</span></div><div class="navbox-list navbox-cell navbox-even">
+<li><a href="/wiki/%E6%B5%B7%E7%9B%97%E8%88%B9" title="海盗船">海盗船</a></li>
+<li><a href="/wiki/%E8%A7%A3%E9%94%81%E6%9C%AA%E6%9D%A5" title="解锁未来">解锁未来</a></li>
+<li><a href="/wiki/%E5%B7%B4%E8%A5%BF%E7%8B%82%E6%AC%A2%E8%8A%82" title="巴西狂欢节">巴西狂欢节</a></li>
+<li><a href="/wiki/%E7%BE%8E%E9%A3%9F%E8%AF%B1%E6%83%91" title="美食诱惑">美食诱惑</a></li>
+<li><a href="/wiki/%E9%9B%BE%E9%83%BD" title="雾都">雾都</a></li>
+<li><a href="/wiki/%E6%9E%81%E5%85%89%E4%B9%8B%E6%97%85" title="极光之旅">极光之旅</a></li>
+<li><a href="/wiki/%E5%9C%A3%E8%AF%9E%E7%A6%8F%E9%9F%B3" title="圣诞福音">圣诞福音</a></li>
+<li><a href="/wiki/%E7%81%AB%E5%B1%B1" title="火山">火山</a></li>
+<li><a href="/wiki/%E8%A5%BF%E9%83%A8" title="西部">西部</a></li>
+<li><a href="/wiki/%E7%B2%BE%E7%81%B5%E9%95%87" title="精灵镇">精灵镇</a></li>
+<li><a href="/wiki/%E6%95%B0%E7%A0%81%E6%96%B9%E9%98%B5" title="数码方阵">数码方阵</a></li>
+<li><a href="/wiki/%E7%8E%8B%E5%9B%BD%E6%88%98%E4%BA%89" title="王国战争">王国战争</a></li>
+<li><a href="/wiki/%E7%81%BC%E7%83%AD%E6%9C%AA%E6%9D%A5" title="灼热未来">灼热未来</a></li>
+<li><a href="/wiki/%E5%B3%A1%E8%B0%B7%E5%A5%87%E9%81%87" title="峡谷奇遇">峡谷奇遇</a></li>
+<li><a href="/wiki/%E5%BA%9F%E5%9C%9F%E7%8B%82%E6%B2%99" title="废土狂沙">废土狂沙</a></li>
+<li><a href="/wiki/%E9%A9%AC%E6%88%8F%E5%9B%A2" title="马戏团">马戏团</a></li>
+<li><a href="/wiki/%E9%85%8B%E9%95%BF" title="酋长">酋长</a></li>
+<li><a href="/wiki/%E7%82%BD%E7%83%AD%E8%B5%9B%E9%81%93" title="炽热赛道">炽热赛道</a></li>
+<li><a href="/wiki/%E5%9F%8E%E5%B8%82" title="城市">城市</a></li>
+<li><a href="/wiki/%E6%98%9F%E9%99%85%E8%B7%83%E8%BF%81" title="星际跃迁">星际跃迁</a></li>
+<li><a href="/wiki/%E6%AE%BF%E5%A0%82%E9%81%97%E5%9D%80" title="殿堂遗址">殿堂遗址</a></li>
+<li><a href="/wiki/%E6%81%B6%E7%81%B5%E7%BE%A4%E8%88%9E" title="恶灵群舞">恶灵群舞</a></li>
+<li><a href="/wiki/Alone_II" title="Alone II">Alone II</a></li>
+<li><a href="/wiki/%E8%BF%B7%E5%9F%8E" title="迷城">迷城</a></li>
+<li><a href="/wiki/%E7%83%AD%E6%81%8B" title="热恋">热恋</a></li>
+<li><a href="/wiki/%E6%B5%B7%E6%88%98" title="海战">海战</a></li>
+<li><a href="/wiki/VR%E5%B9%BB%E5%A2%83" title="VR幻境">VR 幻境</a></li>
+<li><a href="/wiki/%E7%A7%91%E6%8A%80" title="科技">科技</a></li>
+<li><a href="/wiki/%E4%BF%84%E7%BD%97%E6%96%AF%E6%96%B9%E5%9D%97" title="俄罗斯方块">俄罗斯方块</a></li>
+<li><a href="/wiki/%E7%AB%9E%E9%80%9F%E4%BC%A0%E5%A5%87" title="竞速传奇">竞速传奇</a></li>
+<li><a href="/wiki/%E4%BA%A1%E7%81%B5%E8%8A%82" title="亡灵节">亡灵节</a></li>
+<li><a href="/wiki/The_Spectre" title="The Spectre">The Spectre</a></li>
+<li><a href="/wiki/%E9%81%97%E8%BF%B9" title="遗迹">遗迹</a></li>
+<li><a href="/wiki/%E7%94%9F%E6%97%A5%E6%B4%BE%E5%AF%B9" title="生日派对">生日派对</a></li>
+<li><a href="/wiki/%E9%9B%B7%E9%AC%BC" title="雷鬼">雷鬼</a></li>
+<li><a href="/wiki/%E6%99%A8%E5%85%89%E7%86%B9%E5%BE%AE" title="晨光熹微">晨光熹微</a></li>
+<li><a href="/wiki/%E6%80%AA%E7%89%A9%E5%9F%8E%E5%B8%82" title="怪物城市">怪物城市</a></li>
+<li><a href="/wiki/%E6%9E%A2%E7%BA%BD" title="枢纽">枢纽</a></li>
+<li><a href="/wiki/%E6%81%90%E9%BE%99%E8%BF%AA%E6%96%AF%E7%A7%91" title="恐龙迪斯科">恐龙迪斯科</a></li>
+<li><a href="/wiki/%E5%85%8B%E8%8B%8F%E9%B2%81" title="克苏鲁">克苏鲁</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">5 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+<li><a href="/wiki/%E7%99%BE%E5%8F%98%E5%9C%A3%E8%AF%9E%E5%A4%9C" title="百变圣诞夜">百变圣诞夜</a></li>
+<li><a href="/wiki/%E6%97%B6%E9%97%B4" title="时间">时间</a></li>
+<li><a href="/wiki/%E8%A1%97%E5%A4%B4%E7%AF%AE%E7%90%83" title="街头篮球">街头篮球</a></li>
+<li><a href="/wiki/%E8%90%BD%E6%97%A5%E4%BD%99%E6%99%96" title="落日余晖">落日余晖</a></li>
+<li><a href="/wiki/%E6%9C%BA%E7%94%B2" title="机甲">机甲</a></li>
+<li><a href="/wiki/%E7%A5%9E%E7%81%AF" title="神灯">神灯</a></li>
+<li><a href="/wiki/%E5%9F%83%E5%8F%8A" title="埃及">埃及</a></li>
+<li><a href="/wiki/%E9%9F%B3%E5%BE%8B%E6%B4%BE%E5%AF%B9" title="音律派对">音律派对</a></li>
+<li><a href="/wiki/%E6%A3%8B%E5%9F%8E%E8%A6%81%E5%A1%9E" title="棋城要塞">棋城要塞</a></li>
+<li><a href="/wiki/%E8%A3%82%E5%8F%98" title="裂变">裂变</a></li>
+<li><a href="/wiki/%E6%B8%B8%E4%B9%90%E5%9B%AD" title="游乐园">游乐园</a></li>
+<li><a href="/wiki/%E7%A7%AF%E6%9C%A8" title="积木">积木</a></li>
+<li><a href="/wiki/%E5%A4%A9%E7%A9%BA%E4%B9%8B%E5%9F%8E" title="天空之城">天空之城</a></li>
+<li><a href="/wiki/%E4%B8%87%E5%9C%A3%E8%8A%82" title="万圣节">万圣节</a></li>
+<li><a href="/wiki/%E5%B7%A5%E4%B8%9A%E5%9F%BA%E5%9C%B0" title="工业基地">工业基地</a></li>
+<li><a href="/wiki/%E8%8A%B1%E8%88%9E" title="花舞">花舞</a></li>
+<li><a href="/wiki/%E6%9C%BA%E6%A2%B0%E5%8A%A8%E5%8A%9B" title="机械动力">机械动力</a></li>
+<li><a href="/wiki/%E7%BF%A1%E7%BF%A0%E5%9F%8E" title="翡翠城">翡翠城</a></li>
+<li><a href="/wiki/%E5%BC%80%E6%99%AE%E5%8B%92%E7%9A%84%E6%A2%A6" title="开普勒的梦">开普勒的梦</a></li>
+<li><a href="/wiki/%E6%98%A5%E8%8A%82" title="春节">春节</a></li>
+<li><a href="/wiki/%E5%BE%AE%E8%8A%AF%E7%89%87" title="微芯片">微芯片</a></li>
+<li><a href="/wiki/%E8%A7%86%E7%95%8C%E5%B7%A1%E8%88%AA" title="视界巡航">视界巡航</a></li>
+<li><a href="/wiki/%E6%B5%B7%E6%B4%8B" title="海洋">海洋</a></li>
+<li><a href="/wiki/%E7%94%B5%E5%AD%90%E8%BF%B7%E5%AE%AB" title="电子迷宫">电子迷宫</a></li>
+<li><a href="/wiki/%E6%B7%B1%E7%A9%BA" title="深空">深空</a></li>
+<li><a href="/wiki/%E7%BB%BF%E9%87%8E%E4%BB%99%E8%B8%AA" title="绿野仙踪">绿野仙踪</a></li>
+<li><a href="/wiki/%E6%89%91%E5%85%8B" title="扑克">扑克</a></li>
+<li><a href="/wiki/%E9%A9%AF%E9%B9%BF%E4%B9%8B%E7%A4%BC" title="驯鹿之礼">驯鹿之礼</a></li>
+<li><a href="/wiki/%E4%B8%87%E5%9C%A3%E5%98%89%E5%B9%B4%E5%8D%8E" title="万圣嘉年华">万圣嘉年华</a></li>
+<li><a href="/wiki/%E5%9C%A3%E8%AF%9E" title="圣诞">圣诞</a></li>
+<li><a href="/wiki/%E9%AC%BC%E4%BE%8D" title="鬼侍">鬼侍</a></li>
+<li><a href="/wiki/%E9%9C%93%E8%99%B9" title="霓虹">霓虹</a></li>
+<li><a href="/wiki/%E6%A9%84%E6%A6%84%E7%90%83" title="橄榄球">橄榄球</a></li>
+<li><a href="/wiki/The_Spectre_Remix" title="The Spectre Remix">The Spectre Remix</a></li>
+<li><a href="/wiki/%E6%9C%BA%E6%A2%B0%E7%8E%A9%E5%85%B7" title="机械玩具">机械玩具</a></li>
+<li><a href="/wiki/%E8%92%B8%E6%B1%BD%E6%97%B6%E4%BB%A3" title="蒸汽时代">蒸汽时代</a></li>
+<li><a href="/wiki/%E8%BF%B7%E5%B9%BB%E9%9F%B3%E6%B5%AA" title="迷幻音浪">迷幻音浪</a></li>
+<li><a href="/wiki/%E6%80%AA%E7%9B%97" title="怪盗">怪盗</a></li>
+<li><a href="/wiki/%E6%81%90%E9%BE%99%E8%B0%B7" title="恐龙谷">恐龙谷</a></li>
+<li><a href="/wiki/%E4%B8%96%E7%95%8C%E6%9D%AF" title="世界杯">世界杯</a></li>
+<li><a href="/wiki/%E5%83%8F%E7%B4%A0" title="像素">像素</a></li>
+<li><a href="/wiki/%E9%AD%94%E6%B3%95%E5%B1%8B" title="魔法屋">魔法屋</a></li>
+<li><a href="/wiki/%E7%AC%99%C2%B7%E5%AE%B4" title="笙·宴">笙·宴</a></li>
+<li><a href="/wiki/%E7%AB%9E%E6%8A%80%E4%B9%90%E5%9B%AD" title="竞技乐园">竞技乐园</a></li>
+<li><a href="/wiki/%E5%BC%80%E5%BF%83" title="开心">开心</a></li>
+<li><a href="/wiki/%E7%AE%A1%E9%81%93" title="管道">管道</a></li>
+<li><a href="/wiki/%E5%87%A0%E4%BD%95%E8%BF%B7%E9%98%B5" title="几何迷阵">几何迷阵</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">6 星</span></div><div class="navbox-list navbox-cell navbox-even">
+<li><a href="/wiki/%E6%96%B0%E5%B9%B4" title="新年">新年</a></li>
+<li><a href="/wiki/%E4%B8%87%E5%9C%A3%E6%83%8A%E9%AD%82%E5%A4%9C" title="万圣惊魂夜">万圣惊魂夜</a></li>
+<li><a href="/wiki/%E6%B6%85%E6%A7%83" title="涅槃">涅槃</a></li>
+<li><a href="/wiki/%E7%94%9F%E6%97%A5%E5%BF%AB%E4%B9%90" title="生日快乐">生日快乐</a></li>
+<li><a href="/wiki/%E7%94%B5%C2%B7%E7%88%B1" title="电·爱">电·爱</a></li>
+<li><a href="/wiki/%E5%9B%9B%E5%91%A8%E5%B9%B4" title="四周年">四周年</a></li>
+<li><a href="/wiki/%E7%8E%89%E5%85%94%E7%A5%A5%E4%BA%91" title="玉兔祥云">玉兔祥云</a></li>
+<li><a href="/wiki/%E6%97%B6%C2%B7%E5%BF%86" title="时·忆">时·忆</a></li></div></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner"><a href="/wiki/%E5%85%B3%E5%8D%A1#共创关卡" title="关卡">共创</a></span></div><div class="navbox-list navbox-cell navbox navbox-level-1 mobileplainbox"><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">2 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+<li><a href="/wiki/%E7%81%AF%E5%A1%94%E5%B7%B7" title="灯塔巷">灯塔巷</a></li>
+<li><a href="/wiki/%E4%B8%87%E8%8A%B1%E7%AD%92" title="万花筒">万花筒</a></li>
+<li><a href="/wiki/%E5%BF%83%E7%A2%8E" title="心碎">心碎</a></li>
+<li><a href="/wiki/%E5%81%87%E9%9D%A2%E8%88%9E%E4%BC%9A" title="假面舞会">假面舞会</a></li>
+<li><a href="/wiki/%E8%BE%89%E9%97%AA%E5%BC%A6%E6%9C%88" title="辉闪弦月">辉闪弦月</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">3 星</span></div><div class="navbox-list navbox-cell navbox-even">
+<li><a href="/wiki/%E6%98%9F%E7%A9%B9%E7%A7%98%E5%9F%8E" title="星穹秘城">星穹秘城</a></li>
+<li><a href="/wiki/%E5%A4%9C%E5%85%89%E8%9E%88%E8%88%9E%E6%9B%B2" title="夜光螈舞曲">夜光螈舞曲</a></li>
+<li><a href="/wiki/%E6%B5%B7%E6%BB%A8%E6%B8%AF%E6%B9%BE" title="海滨港湾">海滨港湾</a></li>
+<li><a href="/wiki/%E8%BE%89%E5%85%89%E6%B5%B7" title="辉光海">辉光海</a></li>
+<li><a href="/wiki/%E6%9E%9C%E7%B3%96%E7%80%91%E5%B8%83" title="果糖瀑布">果糖瀑布</a></li>
+<li><a href="/wiki/%E9%B8%A3%E8%8C%A7" title="鸣茧">鸣茧</a></li>
+<li><a href="/wiki/%E5%A4%B1%E6%8E%A7" title="失控">失控</a></li>
+<li><a href="/wiki/%E7%86%94%E7%82%89" title="熔炉">熔炉</a></li>
+<li><a href="/wiki/%E8%90%A4%E5%85%89%E8%B0%B7" title="萤光谷">萤光谷</a></li>
+<li><a href="/wiki/%E5%8D%88%E5%A4%9C%E8%BF%AA%E6%96%AF%E7%A7%91" title="午夜迪斯科">午夜迪斯科</a></li>
+<li><a href="/wiki/%E7%9B%9B%E5%85%B8%E6%B8%B8%E8%A1%8C" title="盛典游行">盛典游行</a></li>
+<li><a href="/wiki/%E6%9C%88%E5%A4%9C%E5%89%A7%E9%99%A2" title="月夜剧院">月夜剧院</a></li>
+<li><a href="/wiki/%E8%A7%82%E8%B1%A1%E5%8F%B0" title="观象台">观象台</a></li>
+<li><a href="/wiki/%E9%83%A8%E8%90%BD%E5%AF%BB%E7%8C%8E" title="部落寻猎">部落寻猎</a></li>
+<li><a href="/wiki/%E5%BC%82%E5%8F%98%E5%8D%B1%E6%9C%BA" title="异变危机">异变危机</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">4 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+<li><a href="/wiki/%E8%90%8C%E8%90%8C%E5%96%B5%E5%96%B5" title="萌萌喵喵">萌萌喵喵</a></li>
+<li><a href="/wiki/%E5%BD%97%E7%95%8C" title="彗界">彗界</a></li>
+<li><a href="/wiki/%E5%BE%AE%E5%85%89%E6%BA%B6%E6%B4%9E" title="微光溶洞">微光溶洞</a></li>
+<li><a href="/wiki/%E6%9E%81%E5%A4%9C%E6%BC%AB%E8%A1%8C" title="极夜漫行">极夜漫行</a></li>
+<li><a href="/wiki/%E6%BD%AE%E6%B1%90%E7%83%81%E5%BD%B1" title="潮汐烁影">潮汐烁影</a></li>
+<li><a href="/wiki/%E6%B2%99%E6%BB%A9%E6%B4%BE%E5%AF%B9" title="沙滩派对">沙滩派对</a></li>
+<li><a href="/wiki/%E7%94%9F%E7%89%A9%E5%AE%9E%E9%AA%8C%E5%AE%A4" title="生物实验室">生物实验室</a></li>
+<li><a href="/wiki/%E7%BC%9D%E7%BA%AB%E5%B7%A5%E5%8E%82" title="缝纫工厂">缝纫工厂</a></li>
+<li><a href="/wiki/%E5%92%8C%E5%A3%B0%E8%A1%97%E9%81%93" title="和声街道">和声街道</a></li>
+<li><a href="/wiki/%E5%BE%8B%E5%8A%A8%E7%B2%BE%E7%81%B5" title="律动精灵">律动精灵</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">5 星</span></div><div class="navbox-list navbox-cell navbox-even">
+<li><a href="/wiki/%E6%9C%AA%E6%9D%A5%E9%9A%90%E9%83%BD" title="未来隐都">未来隐都</a></li>
+<li><a href="/wiki/%E6%9E%81%E5%9C%B0%E6%8E%A2%E9%99%A9" title="极地探险">极地探险</a></li>
+<li><a href="/wiki/%E6%96%B0%E7%94%9F" title="新生">新生</a></li>
+<li><a href="/wiki/%E5%85%89%E5%BD%B1" title="光影">光影</a></li>
+<li><a href="/wiki/%E5%B7%A5%E4%B8%9A%E6%97%B6%E4%BB%A3" title="工业时代">工业时代</a></li>
+<li><a href="/wiki/%E7%81%B5%E5%85%89%E6%B2%99%E6%B5%B7" title="灵光沙海">灵光沙海</a></li>
+<li><a href="/wiki/%E6%A0%B8%E8%83%BD" title="核能">核能</a></li>
+<li><a href="/wiki/%E9%92%88%E7%BB%87%E7%8E%8B%E5%9B%BD" title="针织王国">针织王国</a></li>
+<li><a href="/wiki/%E9%9F%B3%E4%B9%90%E5%89%A7%E5%9C%BA" title="音乐剧场">音乐剧场</a></li>
+<li><a href="/wiki/%E6%97%8B%E5%BE%8B%E5%A4%A7%E9%83%BD%E5%B8%82" title="旋律大都市">旋律大都市</a></li>
+<li><a href="/wiki/%E8%B7%B3%E5%8A%A8%E4%B9%8B%E5%9F%8E" title="跳动之城">跳动之城</a></li>
+<li><a href="/wiki/%E4%B8%9B%E6%9E%97%E6%8E%A2%E9%99%A9" title="丛林探险">丛林探险</a></li>
+<li><a href="/wiki/%E7%BB%9D%E5%AF%86%E5%AE%9E%E9%AA%8C%E5%AE%A4" title="绝密实验室">绝密实验室</a></li></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">6 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+<li><a href="/wiki/%E5%BC%80%E6%8B%93" title="开拓">开拓</a></li></div></div><div class="navbox-group navbox-cell navlevel-sortable-preserve"><span class="navbox-group-flex-inner">其他</span></div><div class="navbox-list navbox-cell navbox navbox-level-1 mobileplainbox navlevel-sortable-preserve"><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner"><a href="/wiki/%E5%85%B3%E5%8D%A1#饭制关卡" title="关卡">饭制</a></span></div><div class="navbox-list navbox-cell navbox-even">
+<li><a href="/wiki/%E5%9C%B0%E5%BF%83%E5%8E%86%E9%99%A9" title="地心历险">地心历险</a></li>
+<li><a href="/wiki/%E7%AF%AE%E7%90%83" title="篮球">篮球</a></li>
+<li><a href="/wiki/%E5%87%9D%E5%A4%8F%E4%B9%8B%E5%86%AC" title="凝夏之冬">凝夏之冬</a></li>
+<li><a href="/wiki/%E6%B8%85%E5%A4%8F" title="清夏">清夏</a></li>
+<li><a href="/wiki/%E6%97%A5%E8%9A%80" title="日蚀">日蚀</a></li>
+<li><a href="/wiki/%E8%99%9A%E6%8B%9F%E6%9C%AA%E6%9D%A5%E7%BD%91" title="虚拟未来网">虚拟未来网</a></li>
+<li><a href="/wiki/%E4%B8%83%E5%B9%B4%E4%B9%8B%E6%A2%A6" title="七年之梦">七年之梦</a></li>
+<li><a href="/wiki/Successful_Person" title="Successful Person">Successful Person</a></li>
+<li><a href="/wiki/%E6%B7%B7%E6%B2%8C" title="混沌">混沌</a></li>
+<li><a href="/wiki/%E6%B4%9E%E7%A9%B4" title="洞穴">洞穴</a></li>
+</div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">预告</span></div><div class="navbox-list navbox-cell navbox-odd">
+<ul><li><a href="/wiki/%E6%97%B7%E9%87%8E%E4%BD%99%E9%9F%B5" title="旷野余韵">旷野余韵</a></li></ul>
+</div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">旧版</span></div><div class="navbox-list navbox-cell navbox-even">
+<ul><li><a href="/wiki/%E6%9E%81%E5%A4%9C%E6%BC%AB%E8%A1%8C%EF%BC%88%E6%97%A7%EF%BC%89" title="极夜漫行（旧）">极夜漫行<sub>（旧）</sub></a></li>
+<li><a href="/wiki/%E7%81%BC%E7%83%AD%E6%9C%AA%E6%9D%A5%EF%BC%88%E6%97%A7%EF%BC%89" title="灼热未来（旧）">灼热未来<sub>（旧）</sub></a></li></ul>
+</div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">特殊</span></div><div class="navbox-list navbox-cell navbox-odd">
+<ul><li><a href="/wiki/%E6%96%B0%E5%85%B3%E5%8D%A1" title="新关卡">“新关卡”</a></li>
+<li><a href="/wiki/%E8%A7%86%E7%95%8C%E5%B7%A1%E8%88%AA0" title="视界巡航0">视界巡航<b>0</b></a></li>
+<li><a href="/wiki/%E8%A7%86%E7%95%8C%E5%B7%A1%E8%88%AA2" title="视界巡航2">视界巡航<b>2</b></a></li>
+<li><a href="/wiki/Push" title="Push">Push</a></li></ul>
+</div></div></div>
+  </div>
+  <style data-mw-deduplicate="TemplateStyles:r56437">.mw-parser-output .navbox{display:grid;background-color:#fdfdfd;background-color:hsl(0,0%,calc(99% - 98%*var(--rswiki-dark-mode-enabled)));margin-block-start:1em;margin-block-end:1em;padding:3px;grid-gap:3px;border:1px solid #a2a9b1;border-color:#a2a9b1;border-color:var(--rswiki-border-color-subtle,#a2a9b1);font-size:95%;text-align:start;grid-template-columns:auto 1fr;clear:both;overflow-x:clip;--navbox-hue:160;--navbox-saturation:45%;--navbox-base-color:oklch(calc(0.85 - 0.42 * var(--rswiki-dark-mode-enabled, 0)) calc(0.4 * var(--navbox-saturation)) calc(var(--navbox-hue) + 20));--navbox-title-color:var( --navbox-base-color);--navbox-group-color:color-mix(in oklab, var(--navbox-base-color) 75%, var(--background-color));--navbox-subgroup-color:color-mix(in oklab, var(--navbox-base-color) 50%, var(--background-color));--navbox-sub-subgroup-color:color-mix(in oklab, var(--navbox-base-color) 25%, var(--background-color))}.mw-parser-output .navbox .navbox{--navbox-base-color:inherit}.mw-parser-output .navbox-title{background-color:var(--navbox-title-color)}.mw-parser-output .navbox-group,.mw-parser-output .navbox-above,.mw-parser-output .navbox-below,.mw-parser-output .navbox .navbox .navbox-title{background-color:var(--navbox-group-color)}.mw-parser-output .navbox .navbox .navbox-group,.mw-parser-output .navbox .navbox .navbox-above,.mw-parser-output .navbox .navbox .navbox-below,.mw-parser-output .navbox .navbox .navbox .navbox-title{background-color:var(--navbox-subgroup-color)}.mw-parser-output .navbox .navbox .navbox .navbox-group,.mw-parser-output .navbox .navbox .navbox .navbox-above,.mw-parser-output .navbox .navbox .navbox .navbox-below,.mw-parser-output .navbox .navbox .navbox .navbox .navbox-title{background-color:var(--navbox-sub-subgroup-color)}@supports(color:oklch(from red l c h)){.mw-parser-output .navbox{--navbox-base-color:oklch(from hsl(var(--navbox-hue) var(--navbox-saturation) 0.5) calc(0.85 - 0.42 * var(--rswiki-dark-mode-enabled, 0)) calc(0.4 * var(--navbox-saturation)) h)}}.mw-parser-output .navbox-cell{padding-block-start:0.0875em;padding-block-end:0.0875em;padding-inline-start:1em;padding-inline-end:1em}.mw-parser-output .navbox-list.navbox,.mw-parser-output .navbox-list>.navbox,.mw-parser-output .navbox-list>.navbox-wrapper>.content-table>.navbox{padding:0;border:none;text-align:start;font-size:inherit;margin:0}.mw-parser-output .navbox-list>.navbox.navbox-level-0,.mw-parser-output .navbox-list>.navbox-wrapper>.content-table>.navbox{margin-block-start:-0.0875em;margin-block-end:-0.0875em;margin-inline-start:-1em;margin-inline-end:-1em}.mw-parser-output .navbox-sole-row{text-align:center;grid-column:1/3}.mw-parser-output .navbox-group{font-weight:bold;text-align:end;grid-column:1/2;max-inline-size:9em;display:grid;grid-template-rows:1fr auto 1fr}.mw-parser-output .navbox-group>span{grid-row:2/3}.mw-parser-output .navbox-title{font-weight:bolder;display:grid;grid-template-columns:1fr auto 1fr}.mw-parser-output .navbox-title>.navbar{justify-self:start;grid-column:1/span 1}.mw-parser-output .navbox-title>.navbox-title-content{justify-self:center;grid-column:2/span 1}.mw-parser-output .navbox-odd{background:transparent}.mw-parser-output .navbox-even{background-color:#f7f7f7;background-color:hsl(0,0%,calc(97% - 92%*var(--rswiki-dark-mode-enabled)));background-color:oklch(calc(97% - 75%*var(--rswiki-dark-mode-enabled))0 0)}.mw-parser-output .navbar{display:inline;font-weight:normal}.mw-parser-output .navbar ul{display:inline;white-space:nowrap}.mw-parser-output .navbar li{word-spacing:-0.125em}.mw-parser-output .navbar-mini li abbr[title]{font-variant:small-caps;border-bottom:none;text-decoration:none;cursor:inherit}.mw-parser-output .plainbox>.navbox-group{text-align:center;max-inline-size:none}.mw-parser-output .plainbox>.navbox-group,.mw-parser-output .plainbox>.navbox-list{grid-column:1/3}@media screen and (max-width:850px){.mw-parser-output .mobileplainbox>.navbox-group{text-align:center;max-inline-size:none}.mw-parser-output .mobileplainbox>.navbox-group,.mw-parser-output .mobileplainbox>.navbox-list{grid-column:1/3}}.mw-parser-output div.navbox>*{border-radius:var(--rswiki-border-radius-base,0)}.mw-parser-output div.navbox{border-radius:7px}.mw-parser-output div.navbox>:first-child{border-top-left-radius:7px}.mw-parser-output div.navbox>.navbox-list:nth-child(2),.mw-parser-output div.navbox>.navbox-sole-row:first-child{border-top-right-radius:7px}.mw-parser-output div.navbox>.navbox-group:nth-last-child(2),.mw-parser-output div.navbox>.navbox-sole-row:last-child{border-bottom-left-radius:7px}.mw-parser-output div.navbox>:last-child{border-bottom-right-radius:7px}@media screen and (max-width:850px){.mw-parser-output #mainpage-help-navbox{border-top-left-radius:0}.mw-parser-output .mobileplainbox>:nth-child(2),.mw-parser-output .mobileplainbox>:nth-last-child(2){border-top-right-radius:var(--rswiki-border-radius-base,0);border-bottom-left-radius:var(--rswiki-border-radius-base,0)}.mw-parser-output .mobileplainbox>:first-child{border-top-right-radius:var(--rswiki-border-radius-medium,0)}.mw-parser-output .mobileplainbox>:last-child{border-bottom-left-radius:var(--rswiki-border-radius-medium,0)}}.mw-parser-output .plainbox>:nth-child(2),.mw-parser-output .plainbox>:nth-last-child(2){border-top-right-radius:var(--rswiki-border-radius-base,0);border-bottom-left-radius:var(--rswiki-border-radius-base,0)}.mw-parser-output .plainbox>:first-child{border-top-right-radius:var(--rswiki-border-radius-medium,0)}.mw-parser-output .plainbox>:last-child{border-bottom-left-radius:var(--rswiki-border-radius-medium,0)}.mw-parser-output .navbox-wrapper>span.content-table{display:block}.mw-parser-output .navbox+.navbox:not(.navbox-list){margin-block-start:calc(-1px - 1em)}</style>
+  <style>
+    /* Style for horizontal lists (separator following item) */
+.skin-vector .hlist dl {
+    line-height: 1.5em;
+}
+body .hlist :is(dl, ol, ul),
+:is(dl, ol, ul).hlist,
+.toc-hlist-2 .toclevel1 > ul{
+    margin: 0;
+}
+/*兼容*/
+body .hlist :-webkit-any(dl, ol, ul),
+:-webkit-any(dl, ol, ul).hlist,
+.toc-hlist-2 .toclevel1 > ul{
+    margin: 0;
+}
+body .hlist :is(dd, dt, li),
+:is(dd, dt, li).hlist,
+.toc-hlist-2 .toclevel-2{
+    display: inline;
+    margin: 0;
+}
+/*兼容*/
+body .hlist :-webkit-any(dd, dt, li),
+:-webkit-any(dd, dt, li).hlist,
+.toc-hlist-2 .toclevel-2{
+    display: inline;
+    margin: 0;
+}
+/* Display nested lists inline */
+body .hlist :is(dl, ol, ul) :is(dl, ol, ul),
+:is(dl, ol, ul).hlist :is(dl, ol, ul),
+.toc-hlist-2 .toclevel-1 > ul ul{
+    display: inline;
+}
+/*兼容*/
+body .hlist :-webkit-any(dl, ol, ul) :-webkit-any(dl, ol, ul),
+:-webkit-any(dl, ol, ul).hlist :-webkit-any(dl, ol, ul),
+.toc-hlist-2 .toclevel-1 > ul ul{
+    display: inline;
+}
+/* Generate interpuncts */
+body .hlist dt:after {
+    content: "：";
+}
+body .hlist dd:after,
+body .hlist li:after,
+body .toc-hlist-2 .toclevel-2:after{
+    content: " • ";
+    font-weight: bold;
+}
+body .hlist :is(dd, dt, li):last-child:after,
+body .toc-hlist-2 .toclevel-2:last-child:after{
+    content: none;
+}
+/*兼容*/
+body .hlist :-webkit-any(dd, dt, li):last-child:after,
+body .toc-hlist-2 .toclevel-2:last-child:after{
+    content: none;
+}
+/* for IE 8 */
+body .hlist :is(dd, dt, li).nopunct:after,
+body .toc-hlist-2 .toclevel-2.nopunct:after{
+    content: none;
+}
+/*兼容*/
+body .hlist :-webkit-any(dd, dt, li).nopunct:after,
+body .toc-hlist-2 .toclevel-2.nopunct:after{
+    content: none;
+}
+/* Add parens around nested lists */
+body .hlist :is(dl, ol, ul) :is(dl, ol, ul):before,
+body :is(dl, ol, ul).hlist :is(dl, ol, ul):before,
+body .toc-hlist-2 .toclevel-1 > ul ul:before{
+    content: "（";
+}
+/*兼容*/
+body .hlist :-webkit-any(dl, ol, ul) :-webkit-any(dl, ol, ul):before,
+body :-webkit-any(dl, ol, ul).hlist :-webkit-any(dl, ol, ul):before,
+body .toc-hlist-2 .toclevel-1 > ul ul:before{
+    content: "（";
+}
+body .hlist :is(dl, ol, ul) :is(dl, ol, ul):after,
+body :is(dl, ol, ul).hlist :is(dl, ol, ul):after,
+body .toc-hlist-2 .toclevel-1 > ul ul:after{
+    content: "）";
+}
+/*兼容*/
+body .hlist :-webkit-any(dl, ol, ul) :-webkit-any(dl, ol, ul):after,
+body :-webkit-any(dl, ol, ul).hlist :-webkit-any(dl, ol, ul):after,
+body .toc-hlist-2 .toclevel-1 > ul ul:after{
+    content: "）";
+}
+/* Put numbers in ordered lists */
+body .hlist.hnum ol li,
+ol.hlist.hnum li{
+    counter-increment: level1;
+}
+body .hlist.hnum ol li:before,
+ol.hlist.hnum li:before{
+    content: counter(level1) " ";
+}
+body .hlist.hnum ol ol li,
+ol.hlist.hnum ol li{
+    counter-increment: level2;
+}
+body .hlist.hnum ol ol li:before,
+ol.hlist.hnum ol li:before{
+    content: counter(level2) " ";
+}
+
+.plainlist ul {
+    line-height: inherit;
+    list-style: none none;
+    margin: 0;
+}
+.plainlist ul li {
+    margin-bottom: 0;
+}
+
+.same-bg { background: none }
+  </style>
+  <style>
+    :root {
+      --background-color: #fff;
+      --rswiki-dark-mode-enabled: 0;
+    }
+  </style>
+  <script type="module" src="/index.ts"></script>
+  <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+</body>
+</html>

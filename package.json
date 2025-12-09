@@ -1,0 +1,31 @@
+{
+  "name": "wikiwindows",
+  "module": "index.ts",
+  "type": "module",
+  "version": "0.3.0",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "jquery": "^3.7.1",
+    "less": "^4.4.2",
+    "vite": "^7.2.2",
+    "vite-plugin-css-injected-by-js": "^3.5.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@wikimedia/codex": "^2.3.2",
+    "types-mediawiki": "^2.0.0",
+    "vue": "^3.5.24",
+    "vue-component-type-helpers": "^3.1.4"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --mode production",
+    "build:dev": "vite build --watch --mode development",
+    "preview": "vite preview",
+    "b": "vite build --mode production",
+    "d": "vite build --watch --mode development"
+  }
+}
