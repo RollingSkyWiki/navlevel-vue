@@ -1,4 +1,3 @@
-import { createApp } from "vue";
 import Nav from "./Main.vue";
 
 // 静态导入两个模块，Vite会做tree-shaking
@@ -29,13 +28,14 @@ async function initNavLevel() {
             ]);
             
             // 检查是否为空值
-            const safeData = data || [];
-            const safeLevels = levels || [];
+            if (!data || !levels) {
+                return;
+            }
             
             // 创建Vue应用
-            const app = createApp(Nav, {
-                data: safeData,
-                levels: safeLevels,
+            const app = Vue.createApp(Nav, {
+                data: data,
+                levels: levels,
                 preservedElements: Array.from(
                     navbox.querySelectorAll(".navlevel-sortable-preserve")
                 ),
@@ -47,17 +47,6 @@ async function initNavLevel() {
         } catch (error) {
             console.error('Failed to initialize NavLevel:', error);
             
-            // 降级处理：仅插入保留元素
-            const fallbackApp = createApp(Nav, {
-                data: [],
-                levels: [],
-                preservedElements: Array.from(
-                    navbox.querySelectorAll(".navlevel-sortable-preserve")
-                ),
-                titleElement: navbox.querySelector('.navbox-title') || document.createElement('div')
-            });
-            
-            fallbackApp.mount($newBox[0]);
         }
     });
 }
