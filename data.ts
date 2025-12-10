@@ -3,19 +3,20 @@
 const KEY = 'rswiki:NavLevel-data'
 const LEVEL_KEY = 'rswiki:NavLevel-levels'
 const EXPIRY_KEY = 'rswiki:NavLevel-expiry'
+const OPTIONS_KEY = 'rswiki:NavLevel-options'
 const REJECT_THRESHOLD = 210; // 当前有218个非饭制关卡，如果钻取到的数据低于210，则认为数据无效，使用旧数据
 const EXPIRY_SECS = 3600 * 12;
 const EXPIRY_MS = EXPIRY_SECS * 1000;
 
-const ORIGIN = process.env.NODE_ENV === 'development' ? "/api/rs/" : "https://rs.miraheze.org/";
+const ORIGIN = "https://rs.miraheze.org/";
 
 export async function fetchData(): Promise<LevelEntry[] | null> {
     const res = await (new mw.Api).get({
         action: 'cargoquery',
         formatversion: 2,
         tables: "Level",
-        fields: "Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars",
-        where: "Level.type = '官方' or Level.type = '共创'",
+        fields: "Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars, Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer",
+        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创') AND (Level.removed_version IS NULL OR Level.restored_version IS NOT NULL)",
         limit: 500
     });
     if (!res.cargoquery) {
@@ -24,7 +25,8 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
     const data = res.cargoquery.map(item => {
         return {
             ...item.title,
-            num: Number(item.title.num)
+            num: Number(item.title.num),
+            stars: Number(item.title.stars),
         } as LevelEntry;
     });
     if (data.length < REJECT_THRESHOLD) {
@@ -94,15 +96,41 @@ export async function getValidLevels(): Promise<string[] | null> {
     return levels;
 }
 
+interface Options {
+    grouping1: string;
+    grouping2: string;
+    sorting: string;
+    direction: string;
+}
+
+export function saveOptionsToStorage(options: Options) {
+    mw.storage.setObject(OPTIONS_KEY, options); 
+}
+
+export function loadOptionsFromStorage(): Options {
+    const options = mw.storage.getObject(OPTIONS_KEY);
+    if (!options) {
+        return null;
+    }
+    return options;
+}
+
+
 export interface LevelEntry {
     /** 带繁简转换的中文名 */
     name: string;
     /** 序号 */
-    num: string;
+    num: number;
     /** 页面名 */
     page: string;
     /** 星数 */
     stars: number;
     /** 类型 */
-    type: "共创" | "官方"
+    type: "共创" | "官方";
+    /** 首次出现版本 */
+    inVer: string;
+    /** 移除版本 */
+    remVer: string;
+    /** 恢复版本 */
+    resVer: string;
 }

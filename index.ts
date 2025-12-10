@@ -1,16 +1,21 @@
 import { createApp } from "vue";
-import Nav from "./main.vue";
+import Nav from "./Main.vue";
+
+// 静态导入两个模块，Vite会做tree-shaking
+import * as devData from './polyfill/devdata';
+import * as prodData from './data';
+
+import { collectLevelVariants } from "./variants";
 
 async function initNavLevel() {
     // 开发环境使用模拟数据，生产环境使用真实数据
-    const dataModule = process.env.NODE_ENV === 'development' 
-        ? await import('./devdata')
-        : await import('./data');
+    const dataModule = import.meta.env.DEV ? devData : prodData;
     
     const { getData, getValidLevels } = dataModule;
     const navboxes = document.querySelectorAll(".navlevel-sortable");
     
     $.each(navboxes, async (_, navbox) => {
+        collectLevelVariants(Array.from(navbox.querySelectorAll('a[href]')));
         const $navbox = $(navbox);
         const $newBox = $("<div/>");
         $newBox.addClass("navbox hlist navbox-level-0");

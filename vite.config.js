@@ -30,9 +30,9 @@ export default defineConfig(({mode}) => ({
     emptyOutDir: false,
     lib: {
       entry: './index.ts',
-      name: 'Myth',
+      name: 'navlevel',
       formats: ['iife'],
-      fileName: (_format) => `myth.iife${mode === 'production' ? '.min' : ''}.js`
+      fileName: (_format) => `navlevel.iife.min.js`
     },
     rollupOptions: {
       external: ['vue', '@wikimedia/codex', 'jquery'],

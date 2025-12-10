@@ -105,7 +105,7 @@ export default function mwLoaderPlugin() {
             chunk.code = `
 /// <reference types="types-mediawiki" />
 /// <reference types="types-mediawiki-api" />
-mw.loader.using(["vue", "@wikimedia/codex", "mediawiki.diff.styles"], function(require) {
+mw.loader.using(["vue", "@wikimedia/codex", "ext.gadget.HanAssist"], function(require) {
   const vueModule = require("vue");
   const codexModule = require("@wikimedia/codex");
   

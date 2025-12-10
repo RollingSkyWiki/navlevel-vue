@@ -1,7 +1,18 @@
 <script setup lang="ts">
 import { CdxRadio } from '@wikimedia/codex';
 import { onMounted, ref } from 'vue';
-import { type LevelEntry } from './data';
+import * as devData from './polyfill/devdata';
+import * as prodData from './data';
+import HList from './HList.vue';
+
+import { convByVar } from './hanassist';
+import { variantedType } from './variants';
+
+// 使用相同的策略选择数据模块
+const dataModule = import.meta.env.DEV ? devData : prodData;
+const { saveOptionsToStorage, loadOptionsFromStorage } = dataModule;
+
+type LevelEntry = prodData.LevelEntry;
 
 const props = defineProps<{
     data: LevelEntry[];
@@ -13,38 +24,82 @@ const props = defineProps<{
 
 
 
-enum Grouping {
-    type = "类型",
-    status = "主副",
-    year = "年份",
-    stars = "星数",
-    none = "无"
+const Grouping = {
+    type: convByVar({ hans: "类型", hant: "類型" }),
+    era: convByVar({ hans: "时期", hant: "時期" }),
+    // status: , // 地位（传统意义上的主线、奖励）
+    // year: "年份",
+    stars: convByVar({ hans: "星数", hant: "星數" }),
+    none: convByVar({ hans: "无", hant: "無" })
 }
 
-enum Sorting {
-    date = "日期",
-    name = "名称",
-    stars = "星数",
-    default = "默认"
+type Grouping = keyof typeof Grouping;
+
+const Sorting = {
+    num: convByVar({ hans: "编号", hant: "編號"}),
+    name: convByVar({ hans: "名称", hant: "名稱" }),
+    stars: convByVar({ hans: "星数", hant: "星數" }),
+    default: convByVar({ hans: "默认", hant: "預設" })
 }
 
-// 默认分组
-const grouping1 = ref(Grouping.type);
-const grouping2 = ref(Grouping.stars);
-// 默认排序
-const sorting = ref(Sorting.default);
+type Sorting = keyof typeof Sorting;
+
+const Direction = {
+    asc: "升序",
+    desc: "降序"
+}
+
+type Direction = keyof typeof Direction;
+
+const options = loadOptionsFromStorage();
+
+// 验证函数，确保传入的值是合法的键名
+function isValidGrouping(value: string): value is Grouping {
+    return value in Grouping;
+}
+
+function isValidSorting(value: string): value is Sorting {
+    return value in Sorting;
+}
+
+function isValidDirection(value: string): value is Direction {
+    return value in Direction;
+}
+
+// 默认分组，使用fallback逻辑
+const grouping1 = ref<Grouping>(
+    options?.grouping1 && isValidGrouping(options.grouping1) 
+        ? options.grouping1 
+        : "type"
+);
+const grouping2 = ref<Grouping>(
+    options?.grouping2 && isValidGrouping(options.grouping2) 
+        ? options.grouping2 
+        : "stars"
+);
+// 默认排序，使用fallback逻辑
+const sorting = ref<Sorting>(
+    options?.sorting && isValidSorting(options.sorting) 
+        ? options.sorting 
+        : "default"
+);
+const direction = ref<Direction>(
+    options?.direction && isValidDirection(options.direction) 
+        ? options.direction 
+        : "asc"
+);
 
 const mark = ref<HTMLElement>(null)
 
 const displayData = ref<any>({});
 
-function a() {
 
-}
 
 onMounted(() => {
     // 组件挂载时，把所有preservedElements依次插入到mark元素后面
     if (mark.value && props.preservedElements?.length) {
+        const navbox = props.preservedElements[0].parentElement;
+        navbox.remove(); // 删除原Navbox
         let referenceNode = mark.value;
         props.preservedElements.forEach((element) => {
             if (element && referenceNode.parentNode) {
@@ -56,75 +111,249 @@ onMounted(() => {
         // 卸磨杀驴（划掉
         mark.value.remove();
     }
+    sort();
 })
 
+function rawCompare(a: LevelEntry, b: LevelEntry) {
+    switch (sorting.value) {
+        case 'num':
+            return a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
+        case 'name':
+            return a.name.localeCompare(b.name);
+        case 'stars':
+            return (a.stars - b.stars) || (props.levels.indexOf(a.page) - props.levels.indexOf(b.page));
+        case 'default':
+            // 使用levels里面的顺序
+            return props.levels.indexOf(a.page) - props.levels.indexOf(b.page);
+        default:
+            return 0;
+    }
+}
+
+function compare(a: LevelEntry, b: LevelEntry) {
+    return direction.value === 'asc' ? rawCompare(a, b) : rawCompare(b, a);
+}
+
+function rawgroup(entries: LevelEntry[], grouping: string) {
+    switch (grouping) {
+        case 'era':
+            return [
+                {
+                    group: "辣椒",
+                    list: entries.filter(entry =>
+                        entry.type === "官方" && entry.num <= 7
+                    ) // 俄方（8）
+                },
+                {
+                    group: convByVar({ hans: "猎豹", hant: "獵豹" }),
+                    list: entries.filter(entry =>
+                        entry.type === "官方" && entry.num > 7 && entry.num <= 94
+                    )
+                },
+                {
+                    group: convByVar({ hans: "米麦", hant: "米麥" }),
+                    list: entries.filter(entry =>
+                        entry.type === "共创" || entry.type === "官方" && entry.num > 94
+                    )
+                }
+            ]
+        case 'type':
+            const groups = [];
+            groups.push({
+                group: "官方",
+                list: entries.filter(entry => entry.type === "官方")
+            });
+            groups.push({
+                group: variantedType("共创"),
+                list: entries.filter(entry => entry.type === "共创")
+            });
+            return groups
+        case 'stars':
+            const seenStars = new Set<number>();
+            entries.forEach(entry => seenStars.add(entry.stars));
+            const stars = Array.from(seenStars).sort((a, b) => a - b);
+            return stars.map(star => {
+                return {
+                    group: star + " 星",
+                    list: entries.filter(entry => entry.stars === star)
+                }
+            });
+        // case Grouping.status:
+        default:
+            return entries;
+    }
+}
+/** 分组并排序 */
+function group(entries: LevelEntry[], grouping: Grouping) {
+    return rawgroup(entries, grouping).map(g => {
+        g.list = g.list.sort(compare);
+        return g;
+    });
+}
+
+interface Group {
+    group: string;
+    list: LevelEntry[];
+}
+
+interface DoubleGroup {
+    group: string;
+    list: Group[];
+}
 function sort() {
     // 如果grouping1和grouping2相同，
     // 强制修改grouping2
-    if (grouping1.value === grouping2.value && grouping2.value !== Grouping.none) {
-        grouping2.value = grouping1.value === Grouping.stars ? Grouping.status : Grouping.stars;
+    if (grouping1.value === grouping2.value && grouping2.value !== 'none') {
+        grouping2.value = grouping1.value === 'stars' ? 'type' : 'stars';
     }
-    if (grouping1.value === Grouping.none) {
-        grouping2.value = Grouping.none;
-        displayData.value = [...props.data].sort((a, b) => {
-            switch (sorting.value) {
-                case Sorting.date:
-                    return a.date.localeCompare(b.date);
-                case Sorting.name:
-                    return a.name.localeCompare(b.name);
-                case Sorting.stars:
-                    return b.stars - a.stars;
-                case Sorting.default:
-                    // 使用levels里面的顺序
-                    return props.levels.indexOf(a.page) - props.levels.indexOf(b.page);
-                default:
-                    return 0;
-            }
-        })
+    if (grouping1.value === 'none') {
+        grouping2.value = 'none';
+    }
+    saveOptionsToStorage({
+        grouping1: grouping1.value,
+        grouping2: grouping2.value,
+        sorting: sorting.value,
+        direction: direction.value
+    })
+    if (grouping1.value === 'none') {
+        displayData.value = [...props.data].sort(compare);
+        return;
+    } else if (grouping2.value === 'none') {
+        displayData.value = group(props.data, grouping1.value);
+        console.log(displayData.value);
+    } else {
+        displayData.value = group(props.data, grouping1.value)
+            .map((g) => {
+                g.list = group(g.list, grouping2.value);
+                return g;
+            });
+        console.log(displayData.value);
     }
 }
+
+
+
 
 </script>
 
 <template>
-    <div class="navbox-above navbox-sole-row navlevel-nav">
+    <div class="navbox-cell navbox-sole-row navbox-title stikitable-cell">
+        <span class="navbox-title-content">
+            <a href="/wiki/关卡">
+                {{ convByVar({
+                        hans: "关卡",
+                        hant: "關卡"
+                   })
+                }}
+            </a>
+        </span>
+    </div>
+    <div class="navbox-above navbox-cell navbox-sole-row">
+        {{ convByVar({
+            hans: `本智能排序为实验性功能。当前获取到 ${data.length} 个关卡的数据。`,
+            hant: `本智能排序為實驗性功能。當前獲取到 ${data.length} 個關卡的數據。`
+           })
+        }}
+    </div>
+    <div class="navbox-above navbox-cell navbox-sole-row navlevel-nav">
         <div class="navlevel-radio-group">
-            一级分组：
+            {{ convByVar({ hans: "一级分组：", hant: "一級分組："}) }}
             <cdx-radio
-                v-for="(grouping, _name) in Grouping"
+                v-for="(_, key) in Grouping"
                 v-model:model-value="grouping1"
-                :input-value="grouping"
+                :input-value="key"
                 name="grouping1"
                 :inline="true"
                 @update:model-value="sort"
-            >{{ grouping }}</cdx-radio>
+            >{{ Grouping[key] }}</cdx-radio>
         </div>
         <div class="navlevel-radio-group">
-            二级分组：
+            {{ convByVar({ hans: "二级分组：", hant: "二級分組："}) }}
             <cdx-radio
-                v-for="(grouping, _name) in Grouping"
+                v-for="(_, key) in Grouping"
                 v-model:model-value="grouping2"
-                :input-value="grouping"
+                :input-value="key"
                 name="grouping2"
                 :inline="true"
-                v-show="(grouping !== grouping1) !== (grouping1 === Grouping.none)"
+                :disabled="(key !== grouping1) === (grouping1 === 'none')"
                 @update:model-value="sort"
             >
-            <!-- 上面的!==其实是异或的意思 -->
-            <!-- 也就是说，grouping1为none，则grouping2仅可为none，grouping1为非none，则grouping2不可与grouping1相同 -->
-            {{ grouping }}</cdx-radio>
+                <!-- 上面的!==其实是异或的意思 -->
+                <!-- 也就是说，grouping1为none，则grouping2仅可为none，grouping1为非none，则grouping2不可与grouping1相同 -->
+                {{ Grouping[key] }}
+            </cdx-radio>
         </div>
-    </div>
-    <template v-if="grouping1 === Grouping.none">
+        <div class="navlevel-radio-group">
+            排序：
+            <cdx-radio
+                v-for="(_, key) in Sorting"
+                :key="key"
+                name="sorting"
+                :input-value="key"
+                v-model:model-value="sorting"
+                @update:model-value="sort"
+                :inline="true"
+            >
+                {{ Sorting[key] }}
+            </cdx-radio>
+        </div>
+        <div class="navlevel-radio-group">
+            <cdx-radio
+                v-for="(_, key) in Direction"
+                name="direction"
+                :input-value="key"
+                v-model:model-value="direction"
+                @update:model-value="sort"
+                :inline="true"
+            >
+                {{ Direction[key] }}
+            </cdx-radio>
+        </div>
+    </div><!--
+    <div class="navbox-above navbox-sole-row">
+        <cdx-button action="progressive" @click="save">保存到用户设置</cdx-button>
+    </div> -->
+    <template v-if="grouping1 === 'none'">
         <div class="navbox-list navbox-sole-row"> 
-        <ul>
-            <li v-for="level in displayData">
-                <a :href="level.name">{{ level.page }}</a>
-            </li>
-        </ul>
+            <h-list :levels="displayData"></h-list>
         </div>
     </template>
     <template v-else>
+        <template v-if="grouping2 === 'none'">
+            <template v-for="group in <Group[]>displayData">
+                <div class="navbox-group navbox-cell">
+                    <span class="navbox-group-flex-inner">
+                        {{ group.group }}
+                    </span>
+                </div>
+                <div class="navbox-list navbox-cell">
+                    <h-list :levels="group.list"></h-list>
+                </div>
+            </template>
+        </template>
+        <template v-else>
+            <template v-for="group in <DoubleGroup[]>displayData">
+                <div v-if="group.list.length > 0" class="navbox-group navbox-cell">
+                    <span class="navbox-group-flex-inner">
+                        {{ group.group }}
+                    </span>
+                </div>
+                <div v-if="group.list.length > 0"
+                    class="navbox navbox-list navbox-cell navbox-level-1 mobileplainbox">
+                    <template v-for="subgroup in group.list">
+                        <div v-if="subgroup.list.length > 0" class="navbox-group navbox-cell">
+                            <span class="navbox-group-flex-inner">
+                                {{ subgroup.group }}
+                            </span>
+                        </div>
+                        <div v-if="subgroup.list.length > 0" class="navbox-list navbox-cell">
+                            <h-list :levels="subgroup.list"></h-list>
+                        </div>
+                    
+                    </template>
+                </div>
+            </template> 
+        </template>
     </template>
     <!-- 模板里面不包含navbox这个根元素 -->
     <div ref="mark"></div>
@@ -141,6 +370,7 @@ function sort() {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     padding: 2px;
 }
 </style>

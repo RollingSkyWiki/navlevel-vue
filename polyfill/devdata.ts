@@ -1,21 +1,30 @@
 // 开发环境数据
-
-export interface LevelEntry {
-    /** 带繁简转换的中文名 */
-    name: string;
-    /** 序号 */
-    num: string;
-    /** 页面名 */
-    page: string;
-    /** 星数 */
-    stars: number;
-    /** 类型 */
-    type: "共创" | "官方"
-}
+import { type LevelEntry } from '../data';
 
 // 从 cargo.json 导入的真实关卡数据
 import cargoData from './cargo.json';
 import levelsData from './levels.json';
+
+// 开发环境选项配置
+interface Options {
+    grouping1: string;
+    grouping2: string;
+    sorting: string;
+    direction: string;
+}
+
+export function saveOptionsToStorage(options: Options) {
+    // 开发环境使用 localStorage
+    localStorage.setItem('navlevel-options', JSON.stringify(options)); 
+}
+
+export function loadOptionsFromStorage(): Options {
+    const options = localStorage.getItem('navlevel-options');
+    if (!options) {
+        return null;
+    }
+    return JSON.parse(options);
+}
 
 // 直接使用本地JSON数据
 export const mockLevels: LevelEntry[] = cargoData;

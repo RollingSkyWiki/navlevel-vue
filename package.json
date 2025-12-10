@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@wikimedia/codex": "^2.3.2",
+    "chinese-conv": "^1.0.1",
     "types-mediawiki": "^2.0.0",
     "vue": "^3.5.24",
     "vue-component-type-helpers": "^3.1.4"
@@ -26,6 +27,7 @@
     "build:dev": "vite build --watch --mode development",
     "preview": "vite preview",
     "b": "vite build --mode production",
-    "d": "vite build --watch --mode development"
+    "d": "vite build --watch --mode development",
+    "convert-zh": "bun scripts/convert-zh.js"
   }
 }
