@@ -1,3 +1,5 @@
+[繁體中文](README-hant.md)
+
 此項目用於[滾動的天空Wiki](https://rs.miraheze.org/)的基於Cargo擴展（可不是Rust）的關卡導航框智能分組排序小工具。
 
 實驗性功能，當前Wiki的Cargo數據中信息不全，有一些功能暫時無法支持。
@@ -17,4 +19,11 @@
 本項目使用了`vite-plugin-css-injected-by-js`插件，並使用了自制插件將ESM工程轉換為適配MediaWiki的格式。所有`vue`和`@wikimedia/codex`的依賴都會被移除，轉而使用`mw.loader.using`提供的`require`。
 
 ## 使用
-請在您的[Special:參數設置](https://rs.miraheze.org/wiki/Special:Preferences)中啟用此小工具。
+如果您是開發者：請在您的用戶JS中用JSDelivr引入此倉庫的代碼。
+```js
+// 將<HASH>替換為最新發布的提交短哈希
+$.getScript('https://cdn.jsdelivr.net/gh/RollingSkyWiki/navlevel-vue@<HASH>/dist/navlevel.iife.min.js');
+```
+
+
+如果您是用戶：請在您的[Special:參數設置](https://rs.miraheze.org/wiki/Special:Preferences)中啟用此小工具。

@@ -19,4 +19,11 @@
 本项目使用了`vite-plugin-css-injected-by-js`插件，并使用了自制插件将ESM工程转换为适配MediaWiki的格式。所有`vue`和`@wikimedia/codex`的依赖都会被移除，转而使用`mw.loader.using`提供的`require`。
 
 ## 使用
-请在您的[Special:参数设置](https://rs.miraheze.org/wiki/Special:Preferences)中启用此小工具。
+如果您是开发者：请在您的用户JS中用JSDelivr引入此仓库的代码。
+```js
+// 将<HASH>替换为最新发布的提交短哈希
+$.getScript('https://cdn.jsdelivr.net/gh/RollingSkyWiki/navlevel-vue@<HASH>/dist/navlevel.iife.min.js');
+```
+
+
+如果您是用户：请在您的[Special:参数设置](https://rs.miraheze.org/wiki/Special:Preferences)中启用此小工具。

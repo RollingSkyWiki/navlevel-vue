@@ -18,6 +18,7 @@ async function initNavLevel() {
         const $navbox = $(navbox);
         const $newBox = $("<div/>");
         $newBox.addClass("navbox hlist navbox-level-0");
+        $newBox.attr("style", $navbox.attr("style"));
         $navbox.after($newBox);
         
         try {

@@ -28,6 +28,6 @@
     "preview": "vite preview",
     "b": "vite build --mode production",
     "d": "vite build --watch --mode development",
-    "convert-zh": "bun scripts/convert-zh.js"
+    "cz": "bun scripts/convert-zh.js"
   }
 }
