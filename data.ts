@@ -16,7 +16,7 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
         formatversion: 2,
         tables: "Level",
         fields: "Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars, Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer",
-        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创') AND (Level.removed_version IS NULL OR Level.restored_version IS NOT NULL)",
+        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创') AND Level._pageName NOT LIKE '%（旧）'",
         limit: 500
     });
     if (!res.cargoquery) {
@@ -69,14 +69,8 @@ export async function getData(): Promise<LevelEntry[] | null> {
     return data;
 }
 
-// 可信的关卡列表
-// 从Module:NavLevel/levels中获取
-// 这个Lua文件不应当包含复杂的语法，只有一个return扁平数组的语句
-export async function getValidLevels(): Promise<string[] | null> {
-    let levels = mw.storage.getObject(LEVEL_KEY);
-    if (levels) {
-        return levels;
-    }
+
+export async function fetchLevels(): Promise<string[] | null> {
     const res = await fetch(ORIGIN + "wiki/Module:NavLevel/levels?action=raw");
     if (!res.ok) {
         return null;
@@ -88,10 +82,21 @@ export async function getValidLevels(): Promise<string[] | null> {
         .replace(/\}/g, "]")
         .replace(/\-\-.*?\n/g, "");
     try {
-        levels = JSON.parse(intoJSON);
+        return JSON.parse(intoJSON);
     } catch (e) {
         return null;
     }
+}
+
+// 可信的关卡列表
+// 从Module:NavLevel/levels中获取
+// 这个Lua文件不应当包含复杂的语法，只有一个return扁平数组的语句
+export async function getValidLevels(): Promise<string[] | null> {
+    let levels = mw.storage.getObject(LEVEL_KEY);
+    if (levels) {
+        return levels;
+    }
+    levels = await fetchLevels();
     mw.storage.setObject(LEVEL_KEY, levels, EXPIRY_SECS);
     return levels;
 }
@@ -118,6 +123,22 @@ export function loadOptionsFromStorage(): Options {
 export function isCurrentPage(page: string) {
     // 下划线管他有没有，归一化为空格
     return mw.config.get('wgPageName').replace(/_/g, " ")=== page.replace(/_/g, " ");
+}
+
+/**
+ * 重新强制获取数据，*不会*刷新页面
+ */
+export async function hotPurge(): Promise<{ levels: string[] | null, data: LevelEntry[] | null }> {
+    const levels = await fetchLevels();
+    const data = await fetchData();
+    if (levels) {
+        mw.storage.setObject(LEVEL_KEY, levels, EXPIRY_SECS);
+    }
+    if (data) { // 不使用mediawiki的storage，因为需要手动处理fallback
+        localStorage.setItem(KEY, JSON.stringify(data));
+        localStorage.setItem(EXPIRY_KEY, String(Date.now() + EXPIRY_MS));
+    }
+    return { levels, data };
 }
 
 export interface LevelEntry {

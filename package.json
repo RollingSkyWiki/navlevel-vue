@@ -28,6 +28,7 @@
     "preview": "vite preview",
     "b": "vite build --mode production",
     "d": "vite build --watch --mode development",
-    "cz": "bun scripts/convert-zh.js"
+    "cz": "bun scripts/convert-zh.js",
+    "bt": "bun build test/testData.ts --outfile test/test.js"
   }
 }

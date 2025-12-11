@@ -16,8 +16,8 @@ const { saveOptionsToStorage, loadOptionsFromStorage } = dataModule;
 type LevelEntry = prodData.LevelEntry;
 
 const props = defineProps<{
-    data: LevelEntry[];
-    levels: string[];
+    recvData: LevelEntry[];
+    recvLevels: string[];
     /** 保留的服务端渲染的DOM元素数组，在这里指"其他"一行等多个元素 */
     preserveElements: HTMLElement[];
     /** 保留的DOM元素数组，插入在内容之前 */
@@ -25,7 +25,8 @@ const props = defineProps<{
     titleElement: HTMLElement;
 }>();
 
-
+const data = ref(props.recvData);
+const levels = ref(props.recvLevels);
 
 const Grouping = {
     type: convByVar({ hans: "类型", hant: "類型" }),
@@ -134,16 +135,17 @@ onMounted(() => {
 })
 
 function rawCompare(a: LevelEntry, b: LevelEntry) {
+    const levs = levels.value;
     switch (sorting.value) {
         case 'num':
             return a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
         case 'name':
             return a.name.localeCompare(b.name);
         case 'stars':
-            return (a.stars - b.stars) || (props.levels.indexOf(a.page) - props.levels.indexOf(b.page));
+            return (a.stars - b.stars) || (levs.indexOf(a.page) - levs.indexOf(b.page));
         case 'default':
             // 使用levels里面的顺序
-            return props.levels.indexOf(a.page) - props.levels.indexOf(b.page);
+            return levs.indexOf(a.page) - levs.indexOf(b.page);
         default:
             return 0;
     }
@@ -233,19 +235,25 @@ function sort() {
     if (grouping1.value === 'none') {
         grouping2.value = 'none';
     }
+    if ( (grouping2.value === 'stars' || grouping1.value === 'stars' && grouping2.value === 'none') 
+      && sorting.value === 'stars'
+    ) {
+        sorting.value = 'default';
+    }
     saveOptionsToStorage({
         grouping1: grouping1.value,
         grouping2: grouping2.value,
         sorting: sorting.value,
         direction: direction.value
     })
+    const dat = data.value
     if (grouping1.value === 'none') {
-        displayData.value = [...props.data].sort(compare);
+        displayData.value = [...dat].sort(compare);
         return;
     } else if (grouping2.value === 'none') {
-        displayData.value = group(props.data, grouping1.value);
+        displayData.value = group(dat, grouping1.value);
     } else {
-        displayData.value = group(props.data, grouping1.value)
+        displayData.value = group(dat, grouping1.value)
             .map((g) => {
                 g.list = group(g.list, grouping2.value);
                 return g;
@@ -257,6 +265,26 @@ function oddEven() {
     return (++index) % 2 ? 'navbox-odd' : 'navbox-even';
 }
 
+async function purge() {
+    const { levels: pLevels, data: pData } = await dataModule.hotPurge();
+    if (pLevels) {
+        levels.value = pLevels;
+    } else {
+        mw.notify(convByVar({
+            hans: "获取合法关卡列表失败。",
+            hant: "獲取合法關卡列表失敗。"
+        }), { type: 'error' });
+    }
+    if (pData) {
+        data.value = pData;
+    } else {
+        mw.notify(convByVar({
+            hans: `获取关卡${autospace("Cargo")}数据失败。`,
+            hant: `獲取關卡${autospace("Cargo")}數據失敗。`
+        }), { type: 'error' });
+    }
+    sort();
+}
 
 </script>
 
@@ -268,6 +296,7 @@ function oddEven() {
             hant: `本智能排序為實驗性功能。當前獲取到${autospace(data.length)}個關卡的數據。`
            })
         }}
+        （<a @click="purge" role="button" tabindex="0">{{ convByVar({ hans: "清除缓存", hant: "清除快取"}) }}</a>）
     </div>
     <div class="navbox-above navbox-cell navbox-sole-row navlevel-nav">
         <div class="navlevel-radio-group">

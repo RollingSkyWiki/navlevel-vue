@@ -50,8 +50,8 @@ async function initNavLevel() {
             
             // 创建Vue应用
             const app = Vue.createApp(Nav, {
-                data: data,
-                levels: levels,
+                recvData: data,
+                recvLevels: levels,
                 preserveElements: preserveElements,
                 preserveBeforeElements: preserveBeforeElements,
                 titleElement: navbox.querySelector('.navbox-title') || document.createElement('div')

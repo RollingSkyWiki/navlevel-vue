@@ -45,3 +45,7 @@ export async function getValidLevels(): Promise<string[] | null> {
 export function isCurrentPage(page: string) {
     return page === "山丘";
 }
+
+export async function hotPurge() {
+    return { levels: mockValidLevels, data: mockLevels };
+}
