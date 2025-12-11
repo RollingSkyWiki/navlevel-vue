@@ -374,11 +374,24 @@ function sort() {
     flex-wrap: wrap;
     gap: 2px 1em;
 }
+
 .navlevel-radio-group {
     display: flex;
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
     padding: 2px;
+}
+</style>
+<style>
+/*
+ * Radio里面有复杂的定位，层级关系不能只看z-index。
+ * 不应当修改Radio，保持组件独立性，隔离内部和外部。
+ */
+/* 在这里，本来可以用scoped从而无需限定.navlevel-sortable，
+ * 但是由于标题格是传进来的，不是Vue挂载的，所以会需要
+ */
+.navlevel-sortable .navbox-title {
+    z-index: 1;
 }
 </style>
