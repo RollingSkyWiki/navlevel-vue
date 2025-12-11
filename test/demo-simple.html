@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优先级排序组件 Demo</title>
+    <script type="module" src="https://unpkg.com/vue@3/dist/vue.esm-browser.js"></script>
+    <style>
+        /* Codex Design Tokens 简化版 */
+        :root {
+            --color-base: #202122;
+            --color-emphasized: #000;
+            --color-subtle: #54595d;
+            --color-progressive: #36c;
+            --color-progressive--hover: #447ff5;
+            --color-inverted-fixed: #fff;
+            --background-color-base: #fff;
+            --background-color-subtle: #f8f9fa;
+            --background-color-progressive-subtle: #eaf3ff;
+            --background-color-interactive: #eaecf0;
+            --border-color-base: #a2a9b1;
+            --border-color-subtle: #c8ccd1;
+            --border-color-interactive: #72777d;
+            --border-radius-base: 2px;
+            --border-radius-medium: 8px;
+            --spacing-15: 2px;
+            --spacing-25: 4px;
+            --spacing-35: 6px;
+            --spacing-50: 8px;
+            --spacing-75: 12px;
+            --font-size-small: 0.8125rem;
+            --font-size-medium: 0.875rem;
+            --font-weight-bold: 700;
+            --font-weight-medium: 500;
+            --transition-duration-base: 100ms;
+            --transition-timing-function-ease-in-out: ease-in-out;
+            --font-family-system-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Oxygen-Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-system-sans);
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color-base);
+            color: var(--color-base);
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid var(--border-color-base);
+            border-radius: var(--border-radius-medium);
+        }
+        
+        h1, h2 {
+            color: var(--color-emphasized);
+        }
+        
+        .demo-description {
+            color: var(--color-subtle);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* PrioritySort 组件样式 */
+        .simple-priority-sort {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-25);
+            flex-wrap: wrap;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-25);
+            padding: var(--spacing-25) var(--spacing-50);
+            border: 1px solid var(--border-color-interactive);
+            border-radius: var(--border-radius-base);
+            background-color: var(--background-color-base);
+            color: var(--color-base);
+            cursor: pointer;
+            font-family: var(--font-family-system-sans);
+            font-size: var(--font-size-medium);
+            transition: all var(--transition-duration-base) var(--transition-timing-function-ease-in-out);
+            user-select: none;
+        }
+
+        .priority-item:hover {
+            border-color: var(--color-progressive);
+            background-color: var(--background-color-progressive-subtle);
+            color: var(--color-progressive);
+        }
+
+        .priority-item:first-child {
+            background-color: var(--color-progressive);
+            border-color: var(--color-progressive);
+            color: var(--color-inverted-fixed);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .priority-item:first-child:hover {
+            background-color: var(--color-progressive--hover);
+        }
+
+        .priority-label {
+            white-space: nowrap;
+        }
+
+        .priority-arrow {
+            color: var(--color-subtle);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .priority-item:first-child .priority-arrow {
+            color: var(--color-inverted-fixed);
+        }
+
+        .current-order {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: var(--background-color-subtle);
+            border-radius: var(--border-radius-base);
+            border: 1px solid var(--border-color-base);
+        }
+
+        .current-order h4 {
+            margin: 0 0 8px 0;
+            font-size: var(--font-size-medium);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .current-order p {
+            margin: 0;
+            font-weight: var(--font-weight-medium);
+        }
+
+        .sorted-result {
+            margin-top: 16px;
+        }
+
+        .sorted-result h4 {
+            margin: 0 0 12px 0;
+            font-size: var(--font-size-medium);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .result-list {
+            border: 1px solid var(--border-color-base);
+            border-radius: var(--border-radius-base);
+            overflow: hidden;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color-subtle);
+            gap: 8px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-emphasized);
+            min-width: 24px;
+        }
+
+        .name {
+            flex: 1;
+        }
+
+        .type {
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-bold);
+            background-color: var(--background-color-progressive-subtle);
+            color: var(--color-progressive);
+        }
+
+        .stars {
+            color: var(--color-subtle);
+            font-size: var(--font-size-medium);
+        }
+
+        @media (max-width: 768px) {
+            .simple-priority-sort {
+                gap: var(--spacing-15);
+            }
+            
+            .priority-item {
+                padding: var(--spacing-15) var(--spacing-35);
+                font-size: var(--font-size-small);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="demo-container">
+            <h1>优先级排序组件 Demo</h1>
+            
+            <div class="demo-section">
+                <h2>基础使用</h2>
+                <p class="demo-description">
+                    点击任意排序方式将其置为第一优先级。第一项会高亮显示为当前优先级。
+                </p>
+                <priority-sort v-model="sortingPriority" />
+                <div class="current-order" v-if="sortingPriority.length > 0">
+                    <h4>当前排序顺序：</h4>
+                    <p>{{ sortingPriority.map(item => item.label).join(' → ') }}</p>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>不同配置</h2>
+                <p class="demo-description">
+                    这里是另一个独立配置的组件实例：
+                </p>
+                <priority-sort v-model="alternatePriority" />
+                <div class="current-order" v-if="alternatePriority.length > 0">
+                    <h4>备选排序顺序：</h4>
+                    <p>{{ alternatePriority.map(item => item.label).join(' → ') }}</p>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>实时预览</h2>
+                <p class="demo-description">
+                    基于第一个排序优先级对示例数据进行排序：
+                </p>
+                <priority-sort v-model="demoPriority" />
+                
+                <div class="sorted-result" v-if="sortedData.length > 0">
+                    <h4>排序结果（前5项）：</h4>
+                    <div class="result-list">
+                        <div v-for="(item, index) in sortedData.slice(0, 5)" :key="item.name" class="result-item">
+                            <span class="rank">{{ index + 1 }}.</span>
+                            <span class="name">{{ item.name }}</span>
+                            <span class="type">{{ item.type }}</span>
+                            <span class="stars">{{ item.stars }}星</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const { createApp } = Vue;
+
+        // PrioritySort 组件
+        const PrioritySort = {
+            props: {
+                modelValue: {
+                    type: Array,
+                    required: true
+                }
+            },
+            emits: ['update:modelValue'],
+            computed: {
+                sortedItems() {
+                    return [...this.modelValue];
+                }
+            },
+            methods: {
+                moveToFirst(index) {
+                    if (index <= 0) return;
+                    
+                    const items = [...this.modelValue];
+                    const [selectedItem] = items.splice(index, 1);
+                    items.unshift(selectedItem);
+                    
+                    this.$emit('update:modelValue', items);
+                }
+            },
+            template: `
+                <div class="simple-priority-sort">
+                    <div 
+                        v-for="(item, index) in sortedItems" 
+                        :key="item.value"
+                        class="priority-item"
+                        @click="moveToFirst(index)"
+                    >
+                        <span class="priority-label">{{ item.label }}</span>
+                        <span v-if="index > 0" class="priority-arrow">></span>
+                    </div>
+                </div>
+            `
+        };
+
+        // 示例数据
+        const exampleData = [
+            { name: "辣椒1", num: 1, type: "官方", stars: 1 },
+            { name: "辣椒2", num: 2, type: "官方", stars: 2 },
+            { name: "共创关卡1", num: 100, type: "共创", stars: 3 },
+            { name: "猎豹1", num: 8, type: "官方", stars: 1 },
+            { name: "猎豹2", num: 9, type: "官方", stars: 4 },
+            { name: "共创关卡2", num: 101, type: "共创", stars: 2 },
+            { name: "米麦关卡", num: 95, type: "共创", stars: 5 },
+            { name: "辣椒3", num: 3, type: "官方", stars: 3 },
+        ];
+
+        createApp({
+            components: {
+                PrioritySort
+            },
+            data() {
+                return {
+                    sortingPriority: [
+                        { label: "默认顺序", value: "default" },
+                        { label: "关卡编号", value: "num" },
+                        { label: "星数", value: "stars" },
+                        { label: "关卡名称", value: "name" },
+                        { label: "关卡类型", value: "type" }
+                    ],
+                    alternatePriority: [
+                        { label: "星数优先", value: "stars" },
+                        { label: "类型优先", value: "type" },
+                        { label: "编号优先", value: "num" },
+                        { label: "名称优先", value: "name" }
+                    ],
+                    demoPriority: [
+                        { label: "默认顺序", value: "default" },
+                        { label: "关卡编号", value: "num" },
+                        { label: "星数", value: "stars" },
+                        { label: "关卡名称", value: "name" }
+                    ]
+                };
+            },
+            computed: {
+                sortedData() {
+                    if (this.demoPriority.length === 0) return [];
+                    
+                    const sortMethod = this.demoPriority[0].value;
+                    const data = [...exampleData];
+                    
+                    switch (sortMethod) {
+                        case 'num':
+                            return data.sort((a, b) => a.num - b.num);
+                        case 'name':
+                            return data.sort((a, b) => a.name.localeCompare(b.name));
+                        case 'stars':
+                            return data.sort((a, b) => a.stars - b.stars);
+                        case 'type':
+                            return data.sort((a, b) => {
+                                if (a.type === "官方" && b.type === "共创") return -1;
+                                if (a.type === "共创" && b.type === "官方") return 1;
+                                return a.name.localeCompare(b.name);
+                            });
+                        default:
+                            return data;
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

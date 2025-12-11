@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>defineModel 数据流动验证 Demo</title>
+    <link rel="stylesheet" href="https://unpkg.com/@wikimedia/codex@2.3.2/dist/codex.style.css">
+    <style>
+        body {
+            font-family: var(--font-family-system-sans, sans-serif);
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color-base, #fff);
+            color: var(--color-base, #202122);
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: var(--color-emphasized, #000);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .console-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            border-radius: 6px;
+        }
+        
+        .console-section h4 {
+            margin-top: 0;
+            color: #54595d;
+        }
+        
+        .instructions {
+            background-color: #eaf3ff;
+            border: 1px solid #36c;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #36c;
+        }
+        
+        .instructions ul {
+            margin-bottom: 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>PrioritySort defineModel 数据流动验证</h1>
+        
+        <div class="instructions">
+            <h3>🧪 测试说明</h3>
+            <p>这个Demo用于验证PrioritySort组件的defineModel是否能正确向父组件传递数据变化。</p>
+            <ul>
+                <li>🔍 打开浏览器开发者工具的Console面板查看日志</li>
+                <li>👆 点击任意排序方式按钮</li>
+                <li>⬅️➡️ 使用左右箭头键移动项目</li>
+                <li>👀 观察下方数据显示和Console日志的变化</li>
+            </ul>
+        </div>
+        
+        <!-- PriorityWrapper组件将在这里挂载 -->
+        <div id="app"></div>
+        
+        <div class="console-section">
+            <h4>📊 控制台日志说明</h4>
+            <p>每次操作PrioritySort组件时，你将在Console中看到：</p>
+            <ul>
+                <li><code>Model变化检测：</code> - 表示检测到数据变化</li>
+                <li><code>旧值：</code> - 操作前的数组</li>
+                <li><code>新值：</code> - 操作后的数组</li>
+                <li><code>变化时间：</code> - 精确到秒的时间戳</li>
+                <li><code>✅ 数据确实发生了变化</code> - 验证数据流动成功</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp } from 'vue';
+        import PriorityWrapper from './PriorityWrapper.vue';
+
+        // 创建Vue应用并挂载PriorityWrapper组件
+        createApp(PriorityWrapper).mount('#app');
+    </script>
+</body>
+</html>

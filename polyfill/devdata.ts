@@ -9,7 +9,7 @@ import levelsData from './levels.json';
 interface Options {
     grouping1: string;
     grouping2: string;
-    sorting: string;
+    sortingPriority: string[];
     direction: string;
 }
 

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优先级排序组件 Demo</title>
+    <link rel="stylesheet" href="https://unpkg.com/@wikimedia/codex@2.3.2/dist/codex.style.css">
+    <style>
+        body {
+            font-family: var(--font-family-system-sans, sans-serif);
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color-base, #fff);
+            color: var(--color-base, #202122);
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid var(--border-color-base, #a2a9b1);
+            border-radius: var(--border-radius-medium, 8px);
+        }
+        
+        h1, h2 {
+            color: var(--color-emphasized, #000);
+        }
+        
+        .demo-description {
+            color: var(--color-subtle, #54595d);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>优先级排序组件 Demo</h1>
+        
+        <div class="demo-section">
+            <h2>基础使用</h2>
+            <p class="demo-description">
+                点击任意排序方式将其置为第一优先级。第一项会高亮显示为当前优先级。
+            </p>
+            <div id="app">
+                <priority-sort v-model="sortingPriority" />
+                <div class="current-order" v-if="sortingPriority.length > 0">
+                    <h4>当前排序顺序：</h4>
+                    <p>{{ sortingPriority.join(' → ') }}</p>
+                    <div class="model-verification">
+                        <h5>Model值验证（实时更新）：</h5>
+                        <div class="model-display">
+                            <div v-for="(item, index) in sortingPriority" :key="index" class="model-item">
+                                <span class="index">[{{ index }}]</span>
+                                <span class="value">{{ item }}</span>
+                            </div>
+                        </div>
+                        <div class="model-json">
+                            <strong>JSON：</strong>{{ JSON.stringify(sortingPriority) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>不同配置</h2>
+            <p class="demo-description">
+                这里是另一个独立配置的组件实例：
+            </p>
+            <div id="app2">
+                <priority-sort v-model="alternatePriority" />
+                <div class="current-order" v-if="alternatePriority.length > 0">
+                    <h4>备选排序顺序：</h4>
+                    <p>{{ alternatePriority.join(' → ') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>实时预览</h2>
+            <p class="demo-description">
+                基于第一个排序优先级对示例数据进行排序：
+            </p>
+            <div id="app3">
+                <priority-sort v-model="demoPriority" />
+                
+                <div class="sorted-result" v-if="sortedData.length > 0">
+                    <h4>排序结果（前5项）：</h4>
+                    <div class="result-list">
+                        <div v-for="(item, index) in sortedData.slice(0, 5)" :key="item.name" class="result-item">
+                            <span class="rank">{{ index + 1 }}.</span>
+                            <span class="name">{{ item.name }}</span>
+                            <span class="type">{{ item.type }}</span>
+                            <span class="stars">{{ item.stars }}星</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp } from 'vue';
+        import PrioritySort from './PrioritySort.vue';
+
+        // 示例数据
+        const exampleData = [
+            { name: "辣椒1", num: 1, type: "官方", stars: 1 },
+            { name: "辣椒2", num: 2, type: "官方", stars: 2 },
+            { name: "共创关卡1", num: 100, type: "共创", stars: 3 },
+            { name: "猎豹1", num: 8, type: "官方", stars: 1 },
+            { name: "猎豹2", num: 9, type: "官方", stars: 4 },
+            { name: "共创关卡2", num: 101, type: "共创", stars: 2 },
+            { name: "米麦关卡", num: 95, type: "共创", stars: 5 },
+            { name: "辣椒3", num: 3, type: "官方", stars: 3 },
+        ];
+
+        // 第一个应用 - 基础使用
+        createApp({
+            components: {
+                PrioritySort
+            },
+            data() {
+                return {
+                    sortingPriority: [
+                        "默认顺序",
+                        "关卡编号", 
+                        "星数",
+                        "关卡名称",
+                        "关卡类型"
+                    ]
+                };
+            }
+        }).mount('#app');
+
+        // 第二个应用 - 不同配置
+        createApp({
+            components: {
+                PrioritySort
+            },
+            data() {
+                return {
+                    alternatePriority: [
+                        "星数优先",
+                        "类型优先", 
+                        "编号优先",
+                        "名称优先"
+                    ]
+                };
+            }
+        }).mount('#app2');
+
+        // 第三个应用 - 实时预览
+        createApp({
+            components: {
+                PrioritySort
+            },
+            data() {
+                return {
+                    demoPriority: [
+                        "默认顺序",
+                        "关卡编号",
+                        "星数",
+                        "关卡名称"
+                    ]
+                };
+            },
+            computed: {
+                sortedData() {
+                    if (this.demoPriority.length === 0) return [];
+                    
+                    const sortMethod = this.demoPriority[0];
+                    const data = [...exampleData];
+                    
+                    switch (sortMethod) {
+                        case '关卡编号':
+                            return data.sort((a, b) => a.num - b.num);
+                        case '关卡名称':
+                            return data.sort((a, b) => a.name.localeCompare(b.name));
+                        case '星数':
+                            return data.sort((a, b) => a.stars - b.stars);
+                        case '关卡类型':
+                            return data.sort((a, b) => {
+                                if (a.type === "官方" && b.type === "共创") return -1;
+                                if (a.type === "共创" && b.type === "官方") return 1;
+                                return a.name.localeCompare(b.name);
+                            });
+                        default:
+                            return data;
+                    }
+                }
+            }
+        }).mount('#app3');
+    </script>
+
+    <style>
+        .current-order {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: var(--background-color-subtle, #f8f9fa);
+            border-radius: var(--border-radius-base, 2px);
+            border: 1px solid var(--border-color-base, #a2a9b1);
+        }
+
+        .current-order h4 {
+            margin: 0 0 8px 0;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .current-order p {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .model-verification {
+            margin-top: 12px;
+            padding: 12px;
+            background-color: var(--background-color-progressive-subtle, #eaf3ff);
+            border: 1px solid var(--color-progressive, #36c);
+            border-radius: var(--border-radius-base, 2px);
+        }
+
+        .model-verification h5 {
+            margin: 0 0 8px 0;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--color-progressive, #36c);
+        }
+
+        .model-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .model-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background-color: var(--background-color-base, #fff);
+            border: 1px solid var(--color-progressive, #36c);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .model-item .index {
+            font-weight: 700;
+            color: var(--color-progressive, #36c);
+        }
+
+        .model-item .value {
+            font-weight: 500;
+        }
+
+        .model-json {
+            font-family: monospace;
+            font-size: 0.75rem;
+            padding: 8px;
+            background-color: var(--background-color-base, #fff);
+            border-radius: 2px;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .sorted-result {
+            margin-top: 16px;
+        }
+
+        .sorted-result h4 {
+            margin: 0 0 12px 0;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .result-list {
+            border: 1px solid var(--border-color-base, #a2a9b1);
+            border-radius: var(--border-radius-base, 2px);
+            overflow: hidden;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color-subtle, #c8ccd1);
+            gap: 8px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            font-weight: 700;
+            color: var(--color-emphasized, #000);
+            min-width: 24px;
+        }
+
+        .name {
+            flex: 1;
+        }
+
+        .type {
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background-color: var(--background-color-progressive-subtle, #eaf3ff);
+            color: var(--color-progressive, #36c);
+        }
+
+        .stars {
+            color: var(--color-subtle, #54595d);
+            font-size: 0.875rem;
+        }
+    </style>
+</body>
+</html>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { CdxRadio } from '@wikimedia/codex';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as devData from './polyfill/devdata';
 import * as prodData from './data';
 import HList from './HList.vue';
+import PrioritySort from './components/PrioritySort.vue';
 
 import { convByVar } from './hanassist';
 import { variantedType } from './variants';
@@ -27,6 +28,8 @@ const props = defineProps<{
 
 const data = ref(props.recvData);
 const levels = ref(props.recvLevels);
+
+
 
 const Grouping = {
     type: convByVar({ hans: "类型", hant: "類型" }),
@@ -81,16 +84,20 @@ const grouping2 = ref<Grouping>(
         ? options.grouping2 
         : "stars"
 );
-// 默认排序，使用fallback逻辑
-const sorting = ref<Sorting>(
-    options?.sorting && isValidSorting(options.sorting) 
-        ? options.sorting 
-        : "default"
-);
+
+
 const direction = ref<Direction>(
     options?.direction && isValidDirection(options.direction) 
         ? options.direction 
         : "asc"
+);
+
+// 排序优先级，使用fallback逻辑，兼容旧数据
+const sortingPriority = ref<Sorting[]>(
+    options?.sortingPriority && Array.isArray(options.sortingPriority) && 
+    options.sortingPriority.every(item => isValidSorting(item))
+        ? options.sortingPriority 
+        : ['default', 'num', 'name', 'stars'] // 默认值
 );
 
 const mark = ref<HTMLElement>(null)
@@ -134,25 +141,29 @@ onMounted(() => {
     sort();
 })
 
-function rawCompare(a: LevelEntry, b: LevelEntry) {
+function rawCompare(basis: Sorting): (a: LevelEntry, b: LevelEntry) => number {
     const levs = levels.value;
-    switch (sorting.value) {
+    switch (basis) {
         case 'num':
-            return a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
+            return (a, b) => a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
         case 'name':
-            return a.name.localeCompare(b.name);
+            return (a, b) => a.name.localeCompare(b.name);
         case 'stars':
-            return (a.stars - b.stars) || (levs.indexOf(a.page) - levs.indexOf(b.page));
+            return (a, b) => a.stars - b.stars;
         case 'default':
             // 使用levels里面的顺序
-            return levs.indexOf(a.page) - levs.indexOf(b.page);
+            return (a, b) =>levs.indexOf(a.page) - levs.indexOf(b.page);
         default:
-            return 0;
+            return () => 0;
     }
 }
 
 function compare(a: LevelEntry, b: LevelEntry) {
-    return direction.value === 'asc' ? rawCompare(a, b) : rawCompare(b, a);
+    for (let i = 0; i < sortingPriority.value.length; i++) {
+        const c = rawCompare(sortingPriority.value[i])(a, b);
+        if (c !== 0) return c * (direction.value === "asc" ? 1 : -1);
+    }
+    return 0;
 }
 
 function rawgroup(entries: LevelEntry[], grouping: string) {
@@ -235,15 +246,10 @@ function sort() {
     if (grouping1.value === 'none') {
         grouping2.value = 'none';
     }
-    if ( (grouping2.value === 'stars' || grouping1.value === 'stars' && grouping2.value === 'none') 
-      && sorting.value === 'stars'
-    ) {
-        sorting.value = 'default';
-    }
     saveOptionsToStorage({
         grouping1: grouping1.value,
         grouping2: grouping2.value,
-        sorting: sorting.value,
+        sortingPriority: sortingPriority.value,
         direction: direction.value
     })
     const dat = data.value
@@ -327,18 +333,8 @@ async function purge() {
             </cdx-radio>
         </div>
         <div class="navlevel-radio-group">
-            排序：
-            <cdx-radio
-                v-for="(_, key) in Sorting"
-                :key="key"
-                name="sorting"
-                :input-value="key"
-                v-model:model-value="sorting"
-                @update:model-value="sort"
-                :inline="true"
-            >
-                {{ Sorting[key] }}
-            </cdx-radio>
+            {{ convByVar({ hans: "排序：", hant: "排序："}) }}
+            <priority-sort v-model="sortingPriority" :label-map="Sorting" @update:model-value="sort()"/>
         </div>
         <div class="navlevel-radio-group">
             <cdx-radio
@@ -407,8 +403,10 @@ async function purge() {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 2px 1em;
+    gap: 1em;
 }
+
+
 
 .navlevel-radio-group {
     display: flex;
