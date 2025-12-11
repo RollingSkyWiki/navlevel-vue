@@ -219,7 +219,12 @@ interface DoubleGroup {
     group: string;
     list: Group[];
 }
+
+/** 用于奇偶行的索引值，每行自增1 */
+let index = 0;
+
 function sort() {
+    index = 0;
     // 如果grouping1和grouping2相同，
     // 强制修改grouping2
     if (grouping1.value === grouping2.value && grouping2.value !== 'none') {
@@ -248,7 +253,9 @@ function sort() {
     }
 }
 
-
+function oddEven() {
+    return (++index) % 2 ? 'navbox-odd' : 'navbox-even';
+}
 
 
 </script>
@@ -321,7 +328,7 @@ function sort() {
         <cdx-button action="progressive" @click="save">保存到用户设置</cdx-button>
     </div> -->
     <template v-if="grouping1 === 'none'">
-        <div class="navbox-list navbox-sole-row"> 
+        <div :class="'navbox-list navbox-sole-row ' + oddEven()"> 
             <h-list :levels="displayData"></h-list>
         </div>
     </template>
@@ -333,7 +340,7 @@ function sort() {
                         {{ group.group }}
                     </span>
                 </div>
-                <div class="navbox-list navbox-cell">
+                <div :class="'navbox-list navbox-cell ' + oddEven()">
                     <h-list :levels="group.list"></h-list>
                 </div>
             </template>
@@ -353,7 +360,7 @@ function sort() {
                                 {{ subgroup.group }}
                             </span>
                         </div>
-                        <div v-if="subgroup.list.length > 0" class="navbox-list navbox-cell">
+                        <div v-if="subgroup.list.length > 0" :class="'navbox-list navbox-cell ' + oddEven()">
                             <h-list :levels="subgroup.list"></h-list>
                         </div>
                     
