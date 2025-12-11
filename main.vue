@@ -37,6 +37,7 @@ const Grouping = {
     // status: , // 地位（传统意义上的主线、奖励）
     // year: "年份",
     stars: convByVar({ hans: "星数", hant: "星數" }),
+    version: convByVar({ hans: "版本", hant: "版本" }),
     none: convByVar({ hans: "无", hant: "無" })
 }
 
@@ -189,6 +190,17 @@ function rawgroup(entries: LevelEntry[], grouping: string) {
                     )
                 }
             ]
+        case 'version':
+            const seenVersions = new Set<string>();
+            entries.forEach(entry => seenVersions.add(entry.inVer.substring(0, 1)));
+            seenVersions.delete("3");
+            const versions = Array.from(seenVersions).sort((a, b) => a.localeCompare(b));
+            return versions.map(v => ({
+                group: v === "2" ? "2.x / 3.x" : v + ".x",
+                list: v === "2"
+                    ? entries.filter(entry => entry.inVer.startsWith("2") || entry.inVer.startsWith("3"))
+                    : entries.filter(entry => entry.inVer.startsWith(v))
+            }));
         case 'type':
             const groups = [];
             groups.push({

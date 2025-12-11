@@ -40,7 +40,8 @@ function extractNameFromEntry(entry: LevelEntry) {
     <ul class="hlist">
         <li v-for="level in levels">
             <a :href="isCurrentPage(level.page) ? undefined : `/wiki/${encodeURI(level.page)}`" :title="
-`${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}`
+`${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}
+${level.inVer}${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}`
             "
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
             >
