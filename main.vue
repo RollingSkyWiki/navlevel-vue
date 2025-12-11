@@ -18,7 +18,9 @@ const props = defineProps<{
     data: LevelEntry[];
     levels: string[];
     /** 保留的服务端渲染的DOM元素数组，在这里指"其他"一行等多个元素 */
-    preservedElements: HTMLElement[];
+    preserveElements: HTMLElement[];
+    /** 保留的DOM元素数组，插入在内容之前 */
+    preserveBeforeElements: HTMLElement[];
     titleElement: HTMLElement;
 }>();
 
@@ -90,27 +92,43 @@ const direction = ref<Direction>(
 );
 
 const mark = ref<HTMLElement>(null)
+const markerBefore = ref<HTMLElement>(null)
 
 const displayData = ref<any>({});
 
 
 
 onMounted(() => {
-    // 组件挂载时，把所有preservedElements依次插入到mark元素后面
-    if (mark.value && props.preservedElements?.length) {
-        const navbox = props.preservedElements[0].parentElement;
-        navbox.remove(); // 删除原Navbox
-        let referenceNode = mark.value;
-        props.preservedElements.forEach((element) => {
+    // 组件挂载时，插入preserve-before元素到markerBefore之前
+    if (markerBefore.value && props.preserveBeforeElements?.length) {
+        let referenceNode = markerBefore.value;
+        props.preserveBeforeElements.forEach((element) => {
             if (element && referenceNode.parentNode) {
+                referenceNode.parentNode.insertBefore(element, referenceNode);
+                referenceNode = element;
+            }
+        });
+    }
+    
+    // 插入preserve元素到mark之后
+    if (mark.value && props.preserveElements?.length) {
+        let referenceNode = mark.value;
+        props.preserveElements.forEach((element) => {
+            if (element && referenceNode && referenceNode.parentNode) {
                 referenceNode.parentNode.insertBefore(element, referenceNode.nextSibling);
                 referenceNode = element; // 更新参考节点为刚插入的元素
             }
         });
-        // 移除mark元素
-        // 卸磨杀驴（划掉
+    }
+    
+    // 移除marker元素
+    if (mark.value) {
         mark.value.remove();
     }
+    if (markerBefore.value) {
+        markerBefore.value.remove();
+    }
+    
     sort();
 })
 
@@ -237,17 +255,7 @@ function sort() {
 </script>
 
 <template>
-    <div class="navbox-cell navbox-sole-row navbox-title stikitable-cell">
-        <span class="navbox-title-content">
-            <a href="/wiki/关卡">
-                {{ convByVar({
-                        hans: "关卡",
-                        hant: "關卡"
-                   })
-                }}
-            </a>
-        </span>
-    </div>
+    <div ref="markerBefore"></div>
     <div class="navbox-above navbox-cell navbox-sole-row">
         {{ convByVar({
             hans: `本智能排序为实验性功能。当前获取到 ${data.length} 个关卡的数据。`,

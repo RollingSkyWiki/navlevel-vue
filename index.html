@@ -8,7 +8,7 @@
 </head>
 <body style="background-color: #aaa;">
   <div class="mw-parser-output">
-    <div class="navlevel-sortable navbox navbox-level-0 navlevel-sortable collapsible stikitable hlist" style="--navbox-hue:108; --navbox-saturation:70%;"><div class="navbox-cell navbox-sole-row navbox-title navbox-title-with-navbar stikitable-cell collapsible-always-show"><span class="hlist navbar navbar-mini"><ul><li class="nv-view"><a href="/wiki/Template:%E5%85%B3%E5%8D%A1" title="Template:关卡"><abbr title="查看该模板">查</abbr></a></li><li class="nv-talk"><a href="/wiki/Template_talk:%E5%85%B3%E5%8D%A1" title="Template talk:关卡"><abbr title="讨论该模板">论</abbr></a></li><li class="nv-edit"><a href="/wiki/Special:%E7%BC%96%E8%BE%91%E9%A1%B5%E9%9D%A2/Template:%E5%85%B3%E5%8D%A1" title="Special:编辑页面/Template:关卡"><abbr title="编辑此模板">编</abbr></a></li></ul></span><span class="navbox-title-content"><a href="/wiki/%E5%85%B3%E5%8D%A1" title="关卡">关卡</a></span><span class="collapsetoggle">[<a class="jsLink" role="button" tabindex="0" title="折叠">折叠</a>]</span></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner"><a href="/wiki/%E5%85%B3%E5%8D%A1#官方关卡" title="关卡">官方</a></span></div><div class="navbox-list navbox-cell navbox navbox-level-1 mobileplainbox"><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">1 星</span></div><div class="navbox-list navbox-cell navbox-odd">
+    <div class="navlevel-sortable navbox navbox-level-0 navlevel-sortable collapsible stikitable hlist" style="--navbox-hue:108; --navbox-saturation:70%;"><div class="navbox-cell navbox-sole-row navbox-title navbox-title-with-navbar stikitable-cell collapsible-always-show navlevel-sortable-preserve-before"><span class="hlist navbar navbar-mini"><ul><li class="nv-view"><a href="/wiki/Template:%E5%85%B3%E5%8D%A1" title="Template:关卡"><abbr title="查看该模板">查</abbr></a></li><li class="nv-talk"><a href="/wiki/Template_talk:%E5%85%B3%E5%8D%A1" title="Template talk:关卡"><abbr title="讨论该模板">论</abbr></a></li><li class="nv-edit"><a href="/wiki/Special:%E7%BC%96%E8%BE%91%E9%A1%B5%E9%9D%A2/Template:%E5%85%B3%E5%8D%A1" title="Special:编辑页面/Template:关卡"><abbr title="编辑此模板">编</abbr></a></li></ul></span><span class="navbox-title-content"><a href="/wiki/%E5%85%B3%E5%8D%A1" title="关卡">关卡</a></span><span class="collapsetoggle">[<a class="jsLink" role="button" tabindex="0" title="折叠">折叠</a>]</span></div><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner"><a href="/wiki/%E5%85%B3%E5%8D%A1#官方关卡" title="关卡">官方</a></span></div><div class="navbox-list navbox-cell navbox navbox-level-1 mobileplainbox"><div class="navbox-group navbox-cell"><span class="navbox-group-flex-inner">1 星</span></div><div class="navbox-list navbox-cell navbox-odd">
 <ul><li><a href="/wiki/%E4%BA%91" title="云">云</a></li>
 <li><a href="/wiki/%E6%99%B4%E5%A4%A9" title="晴天">晴天</a></li>
 <li><a href="/wiki/%E7%83%AD%E5%B8%A6%E6%BD%AE%E6%B1%90" title="热带潮汐">热带潮汐</a></li>
@@ -370,6 +370,104 @@ ol.hlist.hnum ol li:before{
 
 .same-bg { background: none }
   </style>
+<style>
+/* 本段CSS摘编自Minecraft Wiki（有修改） */
+/* 使表格的第一行吸顶，对浏览器版本要求比较高 */
+/* Make the first heading row of a table stick to the top of the screen */
+
+/* Won't work properly with rowspan headers, or colspan rows in the table */
+
+:root {
+	--sticky-padding-top: var(--height-sticky-header, 0px);
+}
+
+@media screen and (min-width: 851px) {
+	body.skin-timeless {
+		--sticky-padding-top: 3.475em;
+	}
+}
+
+body.skin-citizen {
+	--sticky-padding-top: var(--height-sticky-header);
+}
+
+@media (min-width: 1120px) {
+  .client-js.vector-sticky-header-enabled {
+    --sticky-padding-top: 3.125rem;
+  }
+}
+
+.wikitable:not(.non-stikitable):not(.stikitable-two-rows) > * > tr:first-child > th:not(.overflowed *),
+table.cargoTable > thead > tr:first-child > th:not(.overflowed th),
+.stikitable-rows > tr > th:not(.overflowed th),
+.stikitable-row > th,
+.stikitable-row > td:not(.overflowed td),
+.stikitable-cell:not(.overflowed .stikitable-cell),
+/* 不限于 td th */
+.stikitable > * > tr:first-child > th:not(.overflowed th) {
+	position: -webkit-sticky;
+	position: sticky;
+	top: var(--sticky-padding-top);
+	/* This fixes the borders for some reason */
+	background-clip: padding-box;
+}
+
+body.skin-citizen .wikitable:not(.non-stikitable):not(.stikitable-two-rows) > * > tr:first-child > th:not(.overflowed *),
+body.skin-citizen table.cargoTable > thead > tr:first-child > th:not(.overflowed th),
+body.skin-citizen .stikitable-rows > tr > th:not(.overflowed th),
+body.skin-citizen .stikitable-row > th,
+.stikitable-row > td:not(.overflowed td),
+body.skin-citizen .stikitable-cell:not(.overflowed .stikitable-cell),
+body.skin-citizen .stikitable > * > tr:first-child > th:not(.overflowed th) {
+	transition-timing-function: var(--transition-timing-function-ease-out);
+	transition-duration: var(--transition-duration-medium);
+	transition-property: top;
+}
+
+/* 恢复吸顶模式下表头的边框 */
+/* Add back the bottom border when stuck */
+.wikitable:not(.non-stikitable):not(.stikitable-two-rows) > * > tr:first-child > th::after,
+table.cargoTable > thead > tr:first-child > th:not(.overflowed th)::after,
+.stikitable-rows > tr > th::after,
+.stikitable-row > th::after,
+.stikitable-row > td::after,
+th.stikitable-cell::after,
+td.stikitable-cell::after,
+.stikitable > * > tr:first-child > th::after {
+	content: "";
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	width: 100%;
+	border-bottom: 1px solid;
+	border-color: inherit;
+}
+
+/**
+== 对 Cargo 表的特殊优化 ==
+**/
+
+table.cargoTable > * > tr > th:first-child,
+table.cargoTable > * > tr > td:first-child {
+	position: -webkit-sticky;
+	position: sticky;
+	left: 0;
+}
+table.cargoTable > * > tr > th:first-child::after,
+table.cargoTable > * > tr > td:first-child::after {
+	content: "";
+	position: absolute;
+	right: -1px;
+	top: 0;
+	height: 100%;
+	border-right: 1px solid;
+	border-color: inherit;
+}
+
+table.cargoTable > thead > tr:first-child > th:first-child:not(.overflowed *) {
+	z-index: 1;
+}
+</style>
   <style>
     :root {
       --background-color: #fff;
@@ -379,8 +477,14 @@ ol.hlist.hnum ol li:before{
         text-decoration: none;
         color: #35b;
     }
+    a:hover {
+        text-decoration: underline;
+    }
     ul {
         padding: 0;
+    }
+    body {
+        height: 114514px;
     }
   </style>
   <script type="module" src="/index.ts"></script>
