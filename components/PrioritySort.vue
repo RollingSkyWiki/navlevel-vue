@@ -116,7 +116,7 @@ const moveRight = (element: HTMLElement, index: number) => {
   display: inline-flex;
   align-items: center;
   padding: var(--spacing-25, 4px) var(--spacing-25, 4px);
-  background-color: var(--background-color-subtle, #f8f9fa);
+  background-color: var(--background-color-base, #f8f9fa);
   border: 1px solid var(--border-color-subtle, #c8ccd1);
   border-radius: var(--border-radius-base, 4px);
   color: var(--color-base, #202122);
