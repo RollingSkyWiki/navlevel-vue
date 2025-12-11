@@ -27,7 +27,7 @@ async function initNavLevel() {
             return;
         }
         
-        const navboxes = document.querySelectorAll(".navlevel-sortable");
+        const navboxes = document.querySelectorAll(".navlevel-sortable:not(.navlevel-sortable-processed)");
         
         $.each(navboxes, async (_, navbox) => {
             collectLevelVariants(Array.from(navbox.querySelectorAll('a[href]')));
@@ -46,6 +46,7 @@ async function initNavLevel() {
             // 清空导航框内容，但保留样式
             const $navbox = $(navbox);
             $navbox.empty();
+            $navbox.addClass('navlevel-sortable-processed')
             
             // 创建Vue应用
             const app = Vue.createApp(Nav, {
@@ -65,10 +66,12 @@ async function initNavLevel() {
     }
 }
 
-// 确保DOM加载完成后初始化
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNavLevel);
-} else {
-    initNavLevel();
-}
-
+if (import.meta.env.DEV)
+    // 确保DOM加载完成后初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initNavLevel);
+    } else {
+        initNavLevel();
+    }
+else
+    mw.hook('wikipage.content').add(initNavLevel);
