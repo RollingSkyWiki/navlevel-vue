@@ -8,7 +8,6 @@ defineProps<{
 }>();
 
 
-console.log(convByVar)
 /**
  * 如果带繁简转换的中文名，则返回当前用户的语言环境下对应的名称
  * @param name 

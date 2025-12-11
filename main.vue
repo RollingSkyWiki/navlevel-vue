@@ -7,6 +7,7 @@ import HList from './HList.vue';
 
 import { convByVar } from './hanassist';
 import { variantedType } from './variants';
+import { autospace, rautospace } from './autospace';
 
 // 使用相同的策略选择数据模块
 const dataModule = import.meta.env.DEV ? devData : prodData;
@@ -192,7 +193,7 @@ function rawgroup(entries: LevelEntry[], grouping: string) {
             const stars = Array.from(seenStars).sort((a, b) => a - b);
             return stars.map(star => {
                 return {
-                    group: star + " 星",
+                    group: rautospace(star.toString()) + "星",
                     list: entries.filter(entry => entry.stars === star)
                 }
             });
@@ -238,14 +239,12 @@ function sort() {
         return;
     } else if (grouping2.value === 'none') {
         displayData.value = group(props.data, grouping1.value);
-        console.log(displayData.value);
     } else {
         displayData.value = group(props.data, grouping1.value)
             .map((g) => {
                 g.list = group(g.list, grouping2.value);
                 return g;
             });
-        console.log(displayData.value);
     }
 }
 
@@ -258,8 +257,8 @@ function sort() {
     <div ref="markerBefore"></div>
     <div class="navbox-above navbox-cell navbox-sole-row">
         {{ convByVar({
-            hans: `本智能排序为实验性功能。当前获取到 ${data.length} 个关卡的数据。`,
-            hant: `本智能排序為實驗性功能。當前獲取到 ${data.length} 個關卡的數據。`
+            hans: `本智能排序为实验性功能。当前获取到${autospace(data.length)}个关卡的数据。`,
+            hant: `本智能排序為實驗性功能。當前獲取到${autospace(data.length)}個關卡的數據。`
            })
         }}
     </div>

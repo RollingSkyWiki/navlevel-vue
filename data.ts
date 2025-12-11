@@ -115,7 +115,6 @@ export function loadOptionsFromStorage(): Options {
     return options;
 }
 
-
 export interface LevelEntry {
     /** 带繁简转换的中文名 */
     name: string;
