@@ -314,7 +314,7 @@ async function purge() {
             hant: `本智能排序為實驗性功能。當前獲取到${autospace(data.length)}個關卡的數據。`
            })
         }}
-        （<a @click="purge" role="button" tabindex="0">{{ convByVar({ hans: "清除缓存", hant: "清除快取"}) }}</a>）
+        （<a @click="purge" @keydown.enter="purge" @keydown.space="purge" role="button" tabindex="0">{{ convByVar({ hans: "清除缓存", hant: "清除快取"}) }}</a>）
     </div>
     <div class="navbox-above navbox-cell navbox-sole-row navlevel-nav">
         <div class="navlevel-radio-group">
@@ -426,6 +426,10 @@ async function purge() {
     align-items: center;
     flex-wrap: wrap;
     padding: 2px;
+}
+
+a[role="button"] {
+    cursor: pointer;
 }
 </style>
 <style>
