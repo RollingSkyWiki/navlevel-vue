@@ -41,3 +41,7 @@ export async function getValidLevels(): Promise<string[] | null> {
     await new Promise(resolve => setTimeout(resolve, 300));
     return mockValidLevels;
 }
+
+export function isCurrentPage(page: string) {
+    return page === "山丘";
+}

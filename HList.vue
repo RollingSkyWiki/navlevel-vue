@@ -2,6 +2,10 @@
 import { type LevelEntry } from './data';
 import { convByVar } from './hanassist';
 import { getVariantedLevelName } from './variants';
+import { isCurrentPage as icp1 } from './data';
+import { isCurrentPage as icp2 } from './polyfill/devdata';
+
+const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
 
 defineProps<{
     levels: LevelEntry[];
@@ -35,9 +39,11 @@ function extractNameFromEntry(entry: LevelEntry) {
 <template>
     <ul class="hlist">
         <li v-for="level in levels">
-            <a :href="`/wiki/${encodeURI(level.page)}`" :title="
+            <a :href="isCurrentPage(level.page) ? undefined : `/wiki/${encodeURI(level.page)}`" :title="
 `${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}`
-            ">
+            "
+            :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
+            >
                 {{ extractNameFromEntry(level) }}
             </a> 
         </li>

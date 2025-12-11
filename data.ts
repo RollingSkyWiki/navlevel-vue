@@ -115,6 +115,11 @@ export function loadOptionsFromStorage(): Options {
     return options;
 }
 
+export function isCurrentPage(page: string) {
+    // 下划线管他有没有，归一化为空格
+    return mw.config.get('wgPageName').replace(/_/g, " ")=== page.replace(/_/g, " ");
+}
+
 export interface LevelEntry {
     /** 带繁简转换的中文名 */
     name: string;
