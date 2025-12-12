@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CdxRadio } from '@wikimedia/codex';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as devData from './polyfill/devdata';
 import * as prodData from './data';
 import HList from './HList.vue';
@@ -38,6 +38,8 @@ const Grouping = {
     // year: "年份",
     stars: convByVar({ hans: "星数", hant: "星數" }),
     version: convByVar({ hans: "版本", hant: "版本" }),
+    present: convByVar({ hans: "奖励方式", hant: "獎勵方式" }),
+    year: convByVar({ hans: "年份", hant: "年份" }),
     none: convByVar({ hans: "无", hant: "無" })
 }
 
@@ -47,6 +49,7 @@ const Sorting = {
     num: convByVar({ hans: "编号", hant: "編號"}),
     name: convByVar({ hans: "名称", hant: "名稱" }),
     stars: convByVar({ hans: "星数", hant: "星數" }),
+    date: convByVar({ hans: "日期", hant: "日期" }),
     default: convByVar({ hans: "默认", hant: "預設" })
 }
 
@@ -93,12 +96,14 @@ const direction = ref<Direction>(
         : "asc"
 );
 
+const defaultSorting: Sorting[] = ['default', 'num', 'date', 'name', 'stars']
+
 // 排序优先级，使用fallback逻辑，兼容旧数据
 const sortingPriority = ref<Sorting[]>(
     options?.sortingPriority && Array.isArray(options.sortingPriority) && 
-    options.sortingPriority.every(item => isValidSorting(item))
+    options.sortingPriority.every(item => isValidSorting(item)) && options.sortingPriority.length === defaultSorting.length
         ? options.sortingPriority 
-        : ['default', 'num', 'name', 'stars'] // 默认值
+        : defaultSorting // 默认值
 );
 
 const mark = ref<HTMLElement>(null)
@@ -143,20 +148,7 @@ onMounted(() => {
 })
 
 function rawCompare(basis: Sorting): (a: LevelEntry, b: LevelEntry) => number {
-    const levs = levels.value;
-    switch (basis) {
-        case 'num':
-            return (a, b) => a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
-        case 'name':
-            return (a, b) => a.name.localeCompare(b.name);
-        case 'stars':
-            return (a, b) => a.stars - b.stars;
-        case 'default':
-            // 使用levels里面的顺序
-            return (a, b) =>levs.indexOf(a.page) - levs.indexOf(b.page);
-        default:
-            return () => 0;
-    }
+    return sortingFunctions[basis] || (() => 0);
 }
 
 function compare(a: LevelEntry, b: LevelEntry) {
@@ -167,65 +159,130 @@ function compare(a: LevelEntry, b: LevelEntry) {
     return 0;
 }
 
-function rawgroup(entries: LevelEntry[], grouping: string) {
-    switch (grouping) {
-        case 'era':
-            return [
-                {
-                    group: "辣椒",
-                    list: entries.filter(entry =>
-                        entry.type === "官方" && entry.num <= 7
-                    ) // 俄方（8）
-                },
-                {
-                    group: convByVar({ hans: "猎豹", hant: "獵豹" }),
-                    list: entries.filter(entry =>
-                        entry.type === "官方" && entry.num > 7 && entry.num <= 94
-                    )
-                },
-                {
-                    group: convByVar({ hans: "米麦", hant: "米麥" }),
-                    list: entries.filter(entry =>
-                        entry.type === "共创" || entry.type === "官方" && entry.num > 94
-                    )
-                }
-            ]
-        case 'version':
-            const seenVersions = new Set<string>();
-            entries.forEach(entry => seenVersions.add(entry.inVer.substring(0, 1)));
-            seenVersions.delete("3");
-            const versions = Array.from(seenVersions).sort((a, b) => a.localeCompare(b));
-            return versions.map(v => ({
-                group: v === "2" ? "2.x / 3.x" : v + ".x",
-                list: v === "2"
-                    ? entries.filter(entry => entry.inVer.startsWith("2") || entry.inVer.startsWith("3"))
-                    : entries.filter(entry => entry.inVer.startsWith(v))
-            }));
-        case 'type':
-            const groups = [];
-            groups.push({
+const groupingFunctions = {
+    era(entries: LevelEntry[]) {
+        return [
+            {
+                group: "辣椒",
+                list: entries.filter(entry =>
+                    entry.type === "官方" && entry.num <= 7
+                ) // 俄方（8）
+            },
+            {
+                group: convByVar({ hans: "猎豹", hant: "獵豹" }),
+                list: entries.filter(entry =>
+                    entry.type === "官方" && entry.num > 7 && entry.num <= 94
+                )
+            },
+            {
+                group: convByVar({ hans: "米麦", hant: "米麥" }),
+                list: entries.filter(entry =>
+                    entry.type === "共创" || entry.type === "官方" && entry.num > 94
+                )
+            }
+        ]
+    },
+    version(entries: LevelEntry[]) {
+        const seenVersions = new Set<string>();
+        entries.forEach(entry => seenVersions.add(entry.inVer.substring(0, 1)));
+        seenVersions.delete("3");
+        const versions = Array.from(seenVersions).sort((a, b) => a.localeCompare(b));
+        return versions.map(v => ({
+            group: v === "2" ? "2.x / 3.x" : v + ".x",
+            list: v === "2"
+                ? entries.filter(entry => entry.inVer.startsWith("2") || entry.inVer.startsWith("3"))
+                : entries.filter(entry => entry.inVer.startsWith(v))
+        }));
+    },
+    type(entries: LevelEntry[]) {
+        return [
+            {
                 group: "官方",
                 list: entries.filter(entry => entry.type === "官方")
-            });
-            groups.push({
+            },
+            {
                 group: variantedType("共创"),
                 list: entries.filter(entry => entry.type === "共创")
+            }
+        ]
+    },
+    stars(entries: LevelEntry[]) {
+        const seenStars = new Set<number>();
+        entries.forEach(entry => seenStars.add(entry.stars));
+        const stars = Array.from(seenStars).sort((a, b) => a - b);
+        return stars.map(star => {
+            return {
+                group: rautospace(star.toString()) + "星",
+                list: entries.filter(entry => entry.stars === star)
+            }
+        });
+    },
+    year(entries: LevelEntry[]) {
+        const seenYears = new Set<string>();
+        entries.forEach(entry => seenYears.add(entry.inDate.substring(0, 4)));
+        const emptyYears = new Set<string>();
+        seenYears.forEach(year => {
+            if (year.trim() === "") {
+                emptyYears.add(year);
+            }
+        });
+        emptyYears.forEach(year => seenYears.delete(year));
+        const years = Array.from(seenYears).sort((a, b) => parseInt(a) - parseInt(b));
+        return years.map(y => ({
+            group: y,
+            list: entries.filter(entry => entry.inDate.startsWith(y))
+        }))
+    },
+    present(entries: LevelEntry[]) {
+        const unknown = entries.filter(entry => !["crown", "present", "none"].includes(entry.award))
+        const groups = [
+            {
+                group: "皇冠",
+                list: entries.filter(entry => entry.award === "crown"),
+            },
+            {
+                group: "神秘箱",
+                list: entries.filter(entry => entry.award === "present"),
+            },
+            {
+                group: convByVar({ hans: "无", hant: "無" }),
+                list: entries.filter(entry => entry.award === "none"),
+            }
+        ];
+        if (unknown.length > 0) {
+            groups.push({
+                group: convByVar({ hans: "未知", hant: "未知" }),
+                list: unknown
             });
-            return groups
-        case 'stars':
-            const seenStars = new Set<number>();
-            entries.forEach(entry => seenStars.add(entry.stars));
-            const stars = Array.from(seenStars).sort((a, b) => a - b);
-            return stars.map(star => {
-                return {
-                    group: rautospace(star.toString()) + "星",
-                    list: entries.filter(entry => entry.stars === star)
-                }
-            });
-        // case Grouping.status:
-        default:
-            return entries;
+        }
+        return groups;
+    },
+    none(entries: LevelEntry[]) {
+        return entries;
     }
+} satisfies Record<Grouping, (entries: LevelEntry[]) => any>;
+
+const sortingFunctions = {
+    num: (a: LevelEntry, b: LevelEntry): number => {
+        return a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
+    },
+    name: (a: LevelEntry, b: LevelEntry): number => {
+        return a.name.localeCompare(b.name);
+    },
+    stars: (a: LevelEntry, b: LevelEntry): number => {
+        return a.stars - b.stars;
+    },
+    date: (a: LevelEntry, b: LevelEntry): number => {
+        return a.inDate.localeCompare(b.inDate);
+    },
+    default: (a: LevelEntry, b: LevelEntry): number => {
+        const levs = levels.value;
+        return levs.indexOf(a.page) - levs.indexOf(b.page);
+    }
+} satisfies Record<Sorting, (a: LevelEntry, b: LevelEntry) => number>;
+
+function rawgroup(entries: LevelEntry[], grouping: Grouping) {
+    return groupingFunctions[grouping](entries);
 }
 /** 分组并排序 */
 function group(entries: LevelEntry[], grouping: Grouping) {
@@ -304,6 +361,8 @@ async function purge() {
     sort();
 }
 
+const LEV = convByVar({ hans: "关", hant: "關" });
+
 </script>
 
 <template>
@@ -373,7 +432,7 @@ async function purge() {
         <template v-if="grouping2 === 'none'">
             <template v-for="group in <Group[]>displayData">
                 <div class="navbox-group navbox-cell">
-                    <span class="navbox-group-flex-inner">
+                    <span class="navbox-group-flex-inner" :title="`${rautospace(group.list.length)}${LEV}`">
                         {{ group.group }}
                     </span>
                 </div>
@@ -385,7 +444,9 @@ async function purge() {
         <template v-else>
             <template v-for="group in <DoubleGroup[]>displayData">
                 <div v-if="group.list.length > 0" class="navbox-group navbox-cell">
-                    <span class="navbox-group-flex-inner">
+                    <span class="navbox-group-flex-inner" :title="`${rautospace(
+                        group.list.reduce((acc, cur) => acc + cur.list.length, 0)
+                    )}${LEV}`">
                         {{ group.group }}
                     </span>
                 </div>
@@ -393,7 +454,7 @@ async function purge() {
                     class="navbox navbox-list navbox-cell navbox-level-1 mobileplainbox">
                     <template v-for="subgroup in group.list">
                         <div v-if="subgroup.list.length > 0" class="navbox-group navbox-cell">
-                            <span class="navbox-group-flex-inner">
+                            <span class="navbox-group-flex-inner" :title="`${rautospace(subgroup.list.length)}${LEV}`">
                                 {{ subgroup.group }}
                             </span>
                         </div>
@@ -415,7 +476,7 @@ async function purge() {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 1em;
+    gap: 0.2em 1em;
 }
 
 

@@ -4,6 +4,7 @@ import { convByVar } from './hanassist';
 import { getVariantedLevelName } from './variants';
 import { isCurrentPage as icp1 } from './data';
 import { isCurrentPage as icp2 } from './polyfill/devdata';
+import { rautospace } from './autospace';
 
 const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
 
@@ -41,7 +42,8 @@ function extractNameFromEntry(entry: LevelEntry) {
         <li v-for="level in levels">
             <a :href="isCurrentPage(level.page) ? undefined : `/wiki/${encodeURI(level.page)}`" :title="
 `${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}
-${level.inVer}${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}`
+${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎
+${level.inVer}(${level.inDate || '????-??-??'})${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}`
             "
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
             >

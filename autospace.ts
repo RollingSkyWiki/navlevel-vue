@@ -12,10 +12,10 @@ export function autospace(text: string | number) {
     return needsSpace ? " " + text + " " : text;
 }
 
-export function lautospace(text: string) {
+export function lautospace(text: string | number) {
     return needsSpace ? " " + text : text;
 }
 
-export function rautospace(text: string) {
+export function rautospace(text: string | number) {
     return needsSpace ? text + " " : text;
 }

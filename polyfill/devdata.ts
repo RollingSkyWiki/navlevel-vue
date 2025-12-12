@@ -1,17 +1,11 @@
 // 开发环境数据
-import { type LevelEntry } from '../data';
+import { type LevelEntry, type Options } from '../data';
 
 // 从 cargo.json 导入的真实关卡数据
 import cargoData from './cargo.json';
 import levelsData from './levels.json';
 
 // 开发环境选项配置
-interface Options {
-    grouping1: string;
-    grouping2: string;
-    sortingPriority: string[];
-    direction: string;
-}
 
 export function saveOptionsToStorage(options: Options) {
     // 开发环境使用 localStorage

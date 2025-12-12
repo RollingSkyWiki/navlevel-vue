@@ -14,20 +14,32 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
     const res = await (new mw.Api).get({
         action: 'cargoquery',
         formatversion: 2,
-        tables: "Level",
-        fields: "Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars, Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer",
+        tables: "Level, Version",
+        fields: "\
+Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars, \
+Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer, \
+Level.award = award, Level.diamonds = dia, Version.date = inDate",
         where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创') AND Level._pageName NOT LIKE '%（旧）'",
+        join_on: "Level.first_came_version = Version._pageName",
         limit: 500
     });
     if (!res.cargoquery) {
         return null;
     }
     const data = res.cargoquery.map(item => {
-        return {
-            ...item.title,
+        return {            
             num: Number(item.title.num),
             stars: Number(item.title.stars),
-        } as LevelEntry;
+            inVer: item.title.inVer,
+            remVer: item.title.remVer,
+            resVer: item.title.resVer,
+            inDate: item.title.inDate,
+            type: item.title.type,
+            page: item.title.page,
+            name: item.title.name,
+            award: item.title.award,
+            dia: Number(item.title.dia),
+        } satisfies LevelEntry;
     });
     if (data.length < REJECT_THRESHOLD) {
         return null;
@@ -101,7 +113,7 @@ export async function getValidLevels(): Promise<string[] | null> {
     return levels;
 }
 
-interface Options {
+export interface Options {
     grouping1: string;
     grouping2: string;
     sortingPriority: string[];
@@ -158,4 +170,10 @@ export interface LevelEntry {
     remVer: string;
     /** 恢复版本 */
     resVer: string;
+    /** 首次出现版本的发布日期 */
+    inDate: string;
+    /** 奖励方式 */
+    award: "none" | "crown" | "present";
+    /** 钻石数 */
+    dia: number;
 }
