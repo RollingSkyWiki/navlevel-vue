@@ -358,6 +358,12 @@ async function purge() {
             hant: `獲取關卡${autospace("Cargo")}數據失敗。`
         }), { type: 'error' });
     }
+    if (pLevels || pData) {
+        mw?.notify?.(convByVar({
+            hans: `数据已更新。${rautospace(data.value.length)}条数据记录，${rautospace(levels.value.length)}个关卡。`,
+            hant: `數據已更新。${rautospace(data.value.length)}條數據記錄，${rautospace(levels.value.length)}個關卡。`
+        }));
+    }
     sort();
 }
 
@@ -373,7 +379,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
             hant: `本智能排序為實驗性功能。當前獲取到${autospace(data.length)}個關卡的數據。`
            })
         }}
-        （<a @click="purge" @keydown.enter="purge" @keydown.space="purge" role="button" tabindex="0">{{ convByVar({ hans: "清除缓存", hant: "清除快取"}) }}</a>）
+        （<a @click="purge" @keydown.enter.prevent="purge" @keydown.space.prevent="purge" role="button" tabindex="0">{{ convByVar({ hans: "清除缓存", hant: "清除快取"}) }}</a>）
     </div>
     <div class="navbox-above navbox-cell navbox-sole-row navlevel-nav">
         <div class="navlevel-radio-group">
