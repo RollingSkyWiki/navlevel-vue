@@ -1,10 +1,13 @@
-<script setup lang="ts"> 
+<script setup lang="ts">
+import { reactive, ref } from 'vue';
+
 import { type LevelEntry } from './data';
 import { convByVar } from './hanassist';
 import { getVariantedLevelName } from './variants';
 import { isCurrentPage as icp1 } from './data';
 import { isCurrentPage as icp2 } from './polyfill/devdata';
 import { rautospace } from './autospace';
+import PopupVue from './Popup.vue';
 
 const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
 
@@ -34,21 +37,37 @@ function extractNameFromEntry(entry: LevelEntry) {
     return getVariantedLevelName(entry.page);
 }
 
+const focusedLevel = ref<LevelEntry | null>(null);
 
+function focusLevel(level: LevelEntry) {
+    setTimeout(() => focusedLevel.value = level, 200);
+}
 
 </script>
 <template>
     <ul class="hlist">
         <li v-for="level in levels">
-            <a :href="isCurrentPage(level.page) ? undefined : `/wiki/${encodeURI(level.page)}`" :title="
-`${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}
-${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎
-${level.inVer}(${level.inDate || '????-??-??'})${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}`
-            "
+            <a :href="isCurrentPage(level.page) ? undefined : `/wiki/${encodeURI(level.page)}`"
+            @mouseover="focusLevel(level)"
+            @touchstart="focusLevel(level)"
+            @focus="focusLevel(level)"
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
             >
                 {{ extractNameFromEntry(level) }}
-            </a> 
+            </a>
+            <popup-vue v-if="focusedLevel === level">
+                {{ `${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}` }}
+                <br>
+                {{ `${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎` }}
+                <br>
+                <a :href="'/wiki/' + level.inVer">{{ level.inVer }}</a>{{ `(${level.inDate || '????-??-??'})${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}` }}
+            </popup-vue>
         </li>
     </ul>
 </template>
+
+<style scoped>
+li:hover :deep(.navlevel-popup > div), li:focus-within :deep(.navlevel-popup > div) {
+    display: block;
+}
+</style>
