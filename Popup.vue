@@ -11,11 +11,9 @@ onMounted(async () => {
     const ele = div.value;
     const rect = ele.getBoundingClientRect();
     // 判定是否超出视窗
-    console.log('Rect:', rect, window.innerWidth);
     if (rect.right > window.innerWidth) {
-        console.log('Out of viewport', span.value.parentElement.clientWidth);
-        ele.style.right = span.value.parentElement.firstElementChild.getBoundingClientRect().width + "px";
-        ele.style.left = "unset";
+        ele.style.top = "100%"
+        ele.style.left = `${window.innerWidth - rect.right - 15}px`;
     }
 });
 
@@ -39,6 +37,7 @@ onMounted(async () => {
     position: absolute;
     width: max-content;
     display: none;
+    font-size: 80%;
     top: 0;
     left: 0;
     background-color: var(--background-color, #ddd);

@@ -510,4 +510,8 @@ a[role="button"] {
 .navlevel-sortable .navbox-title {
     z-index: 1;
 }
+
+.navbox.navlevel-sortable, .navlevel-sortable .navbox {
+    overflow: visible !important;
+}
 </style>
