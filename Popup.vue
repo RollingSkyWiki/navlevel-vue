@@ -15,6 +15,10 @@ onMounted(async () => {
         ele.style.top = "100%"
         ele.style.left = `${window.innerWidth - rect.right - 15}px`;
     }
+    if (rect.y < window.innerHeight / 2) {
+        ele.style.bottom = "100%";
+        ele.style.top = "unset";
+    }
 });
 
 </script>

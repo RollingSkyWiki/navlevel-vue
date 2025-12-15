@@ -13,6 +13,7 @@ const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
 
 defineProps<{
     levels: LevelEntry[];
+    usesMwNativePopup: boolean;
 }>();
 
 
@@ -52,6 +53,7 @@ function focusLevel(level: LevelEntry) {
             @touchstart="focusLevel(level)"
             @focus="focusLevel(level)"
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
+            :title="usesMwNativePopup ? extractNameFromEntry(level) : undefined"
             >
                 {{ extractNameFromEntry(level) }}
             </a>

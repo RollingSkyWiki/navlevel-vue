@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CdxRadio } from '@wikimedia/codex';
+import { CdxCheckbox, CdxRadio } from '@wikimedia/codex';
 import { onMounted, ref } from 'vue';
 import * as devData from './polyfill/devdata';
 import * as prodData from './data';
@@ -95,6 +95,8 @@ const direction = ref<Direction>(
         ? options.direction 
         : "asc"
 );
+
+const usesMwNativePopup = ref(false);
 
 const defaultSorting: Sorting[] = ['default', 'num', 'date', 'name', 'stars']
 
@@ -425,13 +427,16 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                 {{ Direction[key] }}
             </cdx-radio>
         </div>
+        <div class="navlevel-radio-group">
+            <cdx-checkbox v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
+        </div>
     </div><!--
     <div class="navbox-above navbox-sole-row">
         <cdx-button action="progressive" @click="save">保存到用户设置</cdx-button>
     </div> -->
     <template v-if="grouping1 === 'none'">
         <div :class="'navbox-list navbox-sole-row ' + oddEven()"> 
-            <h-list :levels="displayData"></h-list>
+            <h-list :levels="displayData" :uses-mw-native-popup="usesMwNativePopup"></h-list>
         </div>
     </template>
     <template v-else>
@@ -443,7 +448,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                     </span>
                 </div>
                 <div :class="'navbox-list navbox-cell ' + oddEven()">
-                    <h-list :levels="group.list"></h-list>
+                    <h-list :levels="group.list" :uses-mw-native-popup="usesMwNativePopup"></h-list>
                 </div>
             </template>
         </template>
@@ -465,7 +470,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                             </span>
                         </div>
                         <div v-if="subgroup.list.length > 0" :class="'navbox-list navbox-cell ' + oddEven()">
-                            <h-list :levels="subgroup.list"></h-list>
+                            <h-list :levels="subgroup.list" :uses-mw-native-popup="usesMwNativePopup"></h-list>
                         </div>
                     
                     </template>
