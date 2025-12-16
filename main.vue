@@ -464,7 +464,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
         </div>
         <div class="navlevel-radio-group">
             <cdx-checkbox :inline="true" v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
-            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday" @update:model-value="saveOptions()">{{ convByVar({ hans: "标记生日在今日的关卡", hant: "標記生日在今日的關卡" })}}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday" @update:model-value="saveOptions()">{{ convByVar({ hans: "标记生日在今日（UTC+8）的关卡", hant: "標記生日在今日（按UTC+8）的關卡" })}}</cdx-checkbox>
         </div>
     </div><!--
     <div class="navbox-above navbox-sole-row">

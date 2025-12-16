@@ -46,6 +46,22 @@ function focusLevel(level: LevelEntry) {
     setTimeout(() => focusedLevel.value = level, 200);
 }
 
+function todayIsBirthday(level: LevelEntry) {
+    const inDate = level.inDate;
+    if (inDate.startsWith('?')) return false;
+    const m = Number(inDate.substring(5, 7));
+    const d = Number(inDate.substring(8, 10));
+    const today = new Date();
+    const todayStr = today.toLocaleDateString("zh-CN", {
+        timeZone: "Asia/Shanghai",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    })
+    const tm = Number(todayStr.substring(5, 7));
+    const td = Number(todayStr.substring(8, 10));
+    return m === tm && d === td;
+}
 </script>
 <template>
     <ul class="hlist">
@@ -57,7 +73,7 @@ function focusLevel(level: LevelEntry) {
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
             :title="usesMwNativePopup ? extractNameFromEntry(level) : undefined"
             >
-                {{ extractNameFromEntry(level) }}{{ !showsBirthday || level.inDate.startsWith('?') ? '' : (level.inDate.substring(5, 10) === new Date().toISOString().substring(5, 10)) ? '🎂' : '' }}
+                {{ extractNameFromEntry(level) }}{{ !showsBirthday || todayIsBirthday(level) ? '🎂' : '' }}
             </a>
             <popup-vue v-if="focusedLevel === level" :process="(div) => processPopup(level, div)">
                 <span style="font-weight: bold;">
