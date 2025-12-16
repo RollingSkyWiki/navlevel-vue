@@ -45,7 +45,7 @@ const Grouping = reactive({
 });
 
 watch(Grouping, () => {
-    Promise.resolve(sort);
+    Promise.resolve().then(sort);
 })
 
 type Grouping = keyof typeof Grouping;
@@ -58,7 +58,7 @@ const Sorting = reactive({
     default: convByVar({ hans: "默认", hant: "預設" })
 });
 watch(Sorting, () => {
-    Promise.resolve(sort);
+    Promise.resolve().then(sort);
 })
 
 type Sorting = keyof typeof Sorting;
@@ -87,10 +87,10 @@ function isValidDirection(value: string): value is Direction {
 
 // 默认分组，使用fallback逻辑
 const grouping1 = ref<Grouping>(
-    options?.grouping1 as Grouping
+    options?.grouping1 as Grouping ?? "type"
 );
 const grouping2 = ref<Grouping>(
-    options?.grouping2 as Grouping
+    options?.grouping2 as Grouping ?? "stars"
 );
 
 const validateGrouping = (grouping: string, fallback: Grouping) => {
@@ -109,14 +109,19 @@ const defaultSorting: Sorting[] = ['default', 'num', 'date', 'name', 'stars']
 
 // 排序优先级，使用fallback逻辑，兼容旧数据
 const sortingPriority = ref<Sorting[]>(
-    options.sortingPriority! as Sorting[]
+    options?.sortingPriority as Sorting[] ?? defaultSorting
 );
 
 const validateSortingPriority = (priority: Sorting[]) => {
-    return options.sortingPriority && Array.isArray(options.sortingPriority) && 
-    options.sortingPriority.every(item => isValidSorting(item)) && options.sortingPriority.length === Object.keys(Sorting).length
-        ? options.sortingPriority 
-        : defaultSorting // 默认值
+    // 若优先级数组中有不合法项，使用默认排序
+    if (priority.some(item => !isValidSorting(item))) {
+        return defaultSorting;
+    }
+    // 若优先级数组的长度不匹配Sorting的键值对个数，但并没有不合法项，则追加那些选项到末尾
+    if (priority.length !== Object.keys(Sorting).length) {
+        priority.push(...Object.keys(Sorting).filter(item => !priority.includes(item as Sorting)) as Sorting[]);
+    }
+    return priority;
 };
 
 const mark = ref<HTMLElement>(null)
@@ -271,10 +276,11 @@ const groupingFunctions = {
         }
         return groups;
     },
+    // 只是个占位符
     none(entries: LevelEntry[]) {
-        return entries;
+        return entries as unknown as { group: string, list: LevelEntry[] }[];
     }
-} satisfies Record<Grouping, (entries: LevelEntry[]) => any>;
+} satisfies Record<Grouping, (entries: LevelEntry[]) => { group: string, list: LevelEntry[] }[]>;
 
 const sortingFunctions = {
     num: (a: LevelEntry, b: LevelEntry): number => {
@@ -323,6 +329,7 @@ let index = 0;
 
 function sort() {
     index = 0;
+    console.log("Sorting...");
     // 如果grouping1和grouping2相同，
     // 强制修改grouping2
     const vgrouping1 = validateGrouping(grouping1.value, "type") as Grouping;
@@ -349,7 +356,7 @@ function sort() {
     } else {
         displayData.value = group(dat, vgrouping1)
             .map((g) => {
-                g.list = group(g.list, vgrouping2);
+                (g as unknown as DoubleGroup).list = group(g.list, vgrouping2);
                 return g;
             });
     }

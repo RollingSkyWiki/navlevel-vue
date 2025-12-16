@@ -16,11 +16,11 @@ function sameKeys(a: Record<string, any>, b: Record<string, any>): boolean {
     return Object.keys(a).every(key => b.hasOwnProperty(key));
 }
 export function init(
-    Sorting,
-    sortingFunctions,
-    sortingPriority,
-    Grouping,
-    groupingFunctions
+    Sorting: { [key: string]: string },
+    sortingFunctions: { [key: string]: (a: LevelEntry, b: LevelEntry) => number },
+    sortingPriority: string[],
+    Grouping: { [key: string]: string },
+    groupingFunctions: { [key: string]: (entries: LevelEntry[]) => { group: string, list: LevelEntry[] }[] }
 ): (entry: LevelEntry, div: HTMLElement) => void {
     const callbacks: ((entry: LevelEntry, div: HTMLElement) => void)[] = [];
     if (window.NavLevel) {
