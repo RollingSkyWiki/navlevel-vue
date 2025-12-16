@@ -14,6 +14,7 @@ const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
 defineProps<{
     levels: LevelEntry[];
     usesMwNativePopup: boolean;
+    processPopup: (level: LevelEntry, div: HTMLDivElement) => void;
 }>();
 
 
@@ -57,7 +58,7 @@ function focusLevel(level: LevelEntry) {
             >
                 {{ extractNameFromEntry(level) }}
             </a>
-            <popup-vue v-if="focusedLevel === level">
+            <popup-vue v-if="focusedLevel === level" :process="(div) => processPopup(level, div)">
                 {{ `${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}` }}
                 <br>
                 {{ `${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎` }}

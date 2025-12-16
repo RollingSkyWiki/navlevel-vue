@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue';
 
-
+const props = defineProps<{
+    process: (div: HTMLDivElement) => void;
+}>();
 
 const span = ref<HTMLSpanElement | null>(null);
 const div = ref<HTMLDivElement | null>(null);
@@ -19,6 +21,7 @@ onMounted(async () => {
         ele.style.bottom = "100%";
         ele.style.top = "unset";
     }
+    props.process(ele);
 });
 
 </script>
@@ -47,7 +50,7 @@ onMounted(async () => {
     background-color: var(--background-color, #ddd);
     border-radius: 4px;
     padding: 0.5em;
-    z-index: 0;
+    z-index: 1; /* 避免被Navbox title遮挡 */
     box-shadow: 1px 1px 5px hsl(0 0 calc(100% * var(--rswiki-dark-mode-enabled, 0)));
 }
 </style>

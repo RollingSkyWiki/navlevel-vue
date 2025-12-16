@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CdxCheckbox, CdxRadio } from '@wikimedia/codex';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import * as devData from './polyfill/devdata';
 import * as prodData from './data';
 import HList from './HList.vue';
@@ -9,6 +9,7 @@ import PrioritySort from './components/PrioritySort.vue';
 import { convByVar } from './hanassist';
 import { variantedType } from './variants';
 import { autospace, rautospace } from './autospace';
+import { init } from "./expose";
 
 // 使用相同的策略选择数据模块
 const dataModule = import.meta.env.DEV ? devData : prodData;
@@ -30,8 +31,8 @@ const data = ref(props.recvData);
 const levels = ref(props.recvLevels);
 
 
-
-const Grouping = {
+// 使用响应式以便于后续添加
+const Grouping = reactive({
     type: convByVar({ hans: "类型", hant: "類型" }),
     era: convByVar({ hans: "时期", hant: "時期" }),
     // status: , // 地位（传统意义上的主线、奖励）
@@ -41,17 +42,24 @@ const Grouping = {
     present: convByVar({ hans: "奖励方式", hant: "獎勵方式" }),
     year: convByVar({ hans: "年份", hant: "年份" }),
     none: convByVar({ hans: "无", hant: "無" })
-}
+});
+
+watch(Grouping, () => {
+    Promise.resolve(sort);
+})
 
 type Grouping = keyof typeof Grouping;
 
-const Sorting = {
+const Sorting = reactive({
     num: convByVar({ hans: "编号", hant: "編號"}),
     name: convByVar({ hans: "名称", hant: "名稱" }),
     stars: convByVar({ hans: "星数", hant: "星數" }),
     date: convByVar({ hans: "日期", hant: "日期" }),
     default: convByVar({ hans: "默认", hant: "預設" })
-}
+});
+watch(Sorting, () => {
+    Promise.resolve(sort);
+})
 
 type Sorting = keyof typeof Sorting;
 
@@ -79,16 +87,15 @@ function isValidDirection(value: string): value is Direction {
 
 // 默认分组，使用fallback逻辑
 const grouping1 = ref<Grouping>(
-    options?.grouping1 && isValidGrouping(options.grouping1) 
-        ? options.grouping1 
-        : "type"
+    options?.grouping1 as Grouping
 );
 const grouping2 = ref<Grouping>(
-    options?.grouping2 && isValidGrouping(options.grouping2) 
-        ? options.grouping2 
-        : "stars"
+    options?.grouping2 as Grouping
 );
 
+const validateGrouping = (grouping: string, fallback: Grouping) => {
+    return grouping in Grouping ? grouping : fallback;
+};
 
 const direction = ref<Direction>(
     options?.direction && isValidDirection(options.direction) 
@@ -102,11 +109,15 @@ const defaultSorting: Sorting[] = ['default', 'num', 'date', 'name', 'stars']
 
 // 排序优先级，使用fallback逻辑，兼容旧数据
 const sortingPriority = ref<Sorting[]>(
-    options?.sortingPriority && Array.isArray(options.sortingPriority) && 
-    options.sortingPriority.every(item => isValidSorting(item)) && options.sortingPriority.length === defaultSorting.length
+    options.sortingPriority! as Sorting[]
+);
+
+const validateSortingPriority = (priority: Sorting[]) => {
+    return options.sortingPriority && Array.isArray(options.sortingPriority) && 
+    options.sortingPriority.every(item => isValidSorting(item)) && options.sortingPriority.length === Object.keys(Sorting).length
         ? options.sortingPriority 
         : defaultSorting // 默认值
-);
+};
 
 const mark = ref<HTMLElement>(null)
 const markerBefore = ref<HTMLElement>(null)
@@ -154,8 +165,9 @@ function rawCompare(basis: Sorting): (a: LevelEntry, b: LevelEntry) => number {
 }
 
 function compare(a: LevelEntry, b: LevelEntry) {
-    for (let i = 0; i < sortingPriority.value.length; i++) {
-        const c = rawCompare(sortingPriority.value[i])(a, b);
+    const prio = validateSortingPriority(sortingPriority.value);
+    for (let i = 0; i < prio.length; i++) {
+        const c = rawCompare(prio[i])(a, b);
         if (c !== 0) return c * (direction.value === "asc" ? 1 : -1);
     }
     return 0;
@@ -283,6 +295,8 @@ const sortingFunctions = {
     }
 } satisfies Record<Sorting, (a: LevelEntry, b: LevelEntry) => number>;
 
+const processPopup = init(Sorting, sortingFunctions, sortingPriority.value, Grouping, groupingFunctions);
+
 function rawgroup(entries: LevelEntry[], grouping: Grouping) {
     return groupingFunctions[grouping](entries);
 }
@@ -311,10 +325,13 @@ function sort() {
     index = 0;
     // 如果grouping1和grouping2相同，
     // 强制修改grouping2
-    if (grouping1.value === grouping2.value && grouping2.value !== 'none') {
-        grouping2.value = grouping1.value === 'stars' ? 'type' : 'stars';
+    const vgrouping1 = validateGrouping(grouping1.value, "type") as Grouping;
+    const vgrouping2 = validateGrouping(grouping2.value, "stars") as Grouping;
+
+    if (vgrouping1 === vgrouping2 && vgrouping2 !== 'none') {
+        grouping2.value = vgrouping1 === 'stars' ? 'type' : 'stars';
     }
-    if (grouping1.value === 'none') {
+    if (vgrouping1 === 'none') {
         grouping2.value = 'none';
     }
     saveOptionsToStorage({
@@ -324,15 +341,15 @@ function sort() {
         direction: direction.value
     })
     const dat = data.value
-    if (grouping1.value === 'none') {
+    if (vgrouping1 === 'none') {
         displayData.value = [...dat].sort(compare);
         return;
-    } else if (grouping2.value === 'none') {
-        displayData.value = group(dat, grouping1.value);
+    } else if (vgrouping2 === 'none') {
+        displayData.value = group(dat, vgrouping1);
     } else {
-        displayData.value = group(dat, grouping1.value)
+        displayData.value = group(dat, vgrouping1)
             .map((g) => {
-                g.list = group(g.list, grouping2.value);
+                g.list = group(g.list, vgrouping2);
                 return g;
             });
     }
@@ -436,7 +453,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
     </div> -->
     <template v-if="grouping1 === 'none'">
         <div :class="'navbox-list navbox-sole-row ' + oddEven()"> 
-            <h-list :levels="displayData" :uses-mw-native-popup="usesMwNativePopup"></h-list>
+            <h-list :levels="displayData" :uses-mw-native-popup="usesMwNativePopup" :process-popup="processPopup"></h-list>
         </div>
     </template>
     <template v-else>
@@ -448,7 +465,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                     </span>
                 </div>
                 <div :class="'navbox-list navbox-cell ' + oddEven()">
-                    <h-list :levels="group.list" :uses-mw-native-popup="usesMwNativePopup"></h-list>
+                    <h-list :levels="group.list" :uses-mw-native-popup="usesMwNativePopup" :process-popup="processPopup"></h-list>
                 </div>
             </template>
         </template>
@@ -470,7 +487,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                             </span>
                         </div>
                         <div v-if="subgroup.list.length > 0" :class="'navbox-list navbox-cell ' + oddEven()">
-                            <h-list :levels="subgroup.list" :uses-mw-native-popup="usesMwNativePopup"></h-list>
+                            <h-list :levels="subgroup.list" :uses-mw-native-popup="usesMwNativePopup" :process-popup="processPopup"></h-list>
                         </div>
                     
                     </template>
