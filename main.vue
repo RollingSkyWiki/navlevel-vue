@@ -331,6 +331,16 @@ const resetIndex = () => {
     index = 0;
 }
 
+function saveOptions() {
+    saveOptionsToStorage({
+        grouping1: grouping1.value,
+        grouping2: grouping2.value,
+        sortingPriority: sortingPriority.value,
+        direction: direction.value,
+        showsBirthday: showsBirthday.value,
+    })
+}
+
 function sort() {
     console.log("Sorting...");
     // 如果grouping1和grouping2相同，
@@ -344,13 +354,7 @@ function sort() {
     if (vgrouping1 === 'none') {
         grouping2.value = 'none';
     }
-    saveOptionsToStorage({
-        grouping1: grouping1.value,
-        grouping2: grouping2.value,
-        sortingPriority: sortingPriority.value,
-        direction: direction.value,
-        showsBirthday: showsBirthday.value,
-    })
+    saveOptions();
     const dat = data.value
     if (vgrouping1 === 'none') {
         displayData.value = [...dat].sort(compare);
@@ -460,7 +464,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
         </div>
         <div class="navlevel-radio-group">
             <cdx-checkbox :inline="true" v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
-            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday">{{ convByVar({ hans: "标记生日在今日的关卡", hant: "標記生日在今日的關卡" })}}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday" @update:model-value="saveOptions()">{{ convByVar({ hans: "标记生日在今日的关卡", hant: "標記生日在今日的關卡" })}}</cdx-checkbox>
         </div>
     </div><!--
     <div class="navbox-above navbox-sole-row">
