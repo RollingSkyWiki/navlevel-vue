@@ -73,7 +73,7 @@ function todayIsBirthday(level: LevelEntry) {
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
             :title="usesMwNativePopup ? extractNameFromEntry(level) : undefined"
             >
-                {{ extractNameFromEntry(level) }}{{ !showsBirthday || todayIsBirthday(level) ? '🎂' : '' }}
+                {{ extractNameFromEntry(level) }}{{ showsBirthday && todayIsBirthday(level) ? '🎂' : '' }}
             </a>
             <popup-vue v-if="focusedLevel === level" :process="(div) => processPopup(level, div)">
                 <span style="font-weight: bold;">
