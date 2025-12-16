@@ -118,6 +118,7 @@ export interface Options {
     grouping2: string;
     sortingPriority: string[];
     direction: string;
+    showsBirthday: boolean;
 }
 
 export function saveOptionsToStorage(options: Options) {

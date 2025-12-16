@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CdxCheckbox, CdxRadio } from '@wikimedia/codex';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onBeforeUpdate, onMounted, reactive, ref, watch } from 'vue';
 import * as devData from './polyfill/devdata';
 import * as prodData from './data';
 import HList from './HList.vue';
@@ -104,6 +104,7 @@ const direction = ref<Direction>(
 );
 
 const usesMwNativePopup = ref(false);
+const showsBirthday = ref(options?.showsBirthday ?? false);
 
 const defaultSorting: Sorting[] = ['default', 'num', 'date', 'name', 'stars']
 
@@ -326,9 +327,11 @@ interface DoubleGroup {
 
 /** 用于奇偶行的索引值，每行自增1 */
 let index = 0;
+const resetIndex = () => {
+    index = 0;
+}
 
 function sort() {
-    index = 0;
     console.log("Sorting...");
     // 如果grouping1和grouping2相同，
     // 强制修改grouping2
@@ -345,7 +348,8 @@ function sort() {
         grouping1: grouping1.value,
         grouping2: grouping2.value,
         sortingPriority: sortingPriority.value,
-        direction: direction.value
+        direction: direction.value,
+        showsBirthday: showsBirthday.value,
     })
     const dat = data.value
     if (vgrouping1 === 'none') {
@@ -393,6 +397,9 @@ async function purge() {
     sort();
 }
 
+onBeforeUpdate(() => {
+    resetIndex();
+})
 const LEV = convByVar({ hans: "关", hant: "關" });
 
 </script>
@@ -452,7 +459,8 @@ const LEV = convByVar({ hans: "关", hant: "關" });
             </cdx-radio>
         </div>
         <div class="navlevel-radio-group">
-            <cdx-checkbox v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday">{{ convByVar({ hans: "标记生日在今日的关卡", hant: "標記生日在今日的關卡" })}}</cdx-checkbox>
         </div>
     </div><!--
     <div class="navbox-above navbox-sole-row">
@@ -460,7 +468,10 @@ const LEV = convByVar({ hans: "关", hant: "關" });
     </div> -->
     <template v-if="grouping1 === 'none'">
         <div :class="'navbox-list navbox-sole-row ' + oddEven()"> 
-            <h-list :levels="displayData" :uses-mw-native-popup="usesMwNativePopup" :process-popup="processPopup"></h-list>
+            <h-list :levels="displayData"
+                    :uses-mw-native-popup="usesMwNativePopup"
+                    :shows-birthday="showsBirthday"
+                    :process-popup="processPopup"></h-list>
         </div>
     </template>
     <template v-else>
@@ -472,7 +483,10 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                     </span>
                 </div>
                 <div :class="'navbox-list navbox-cell ' + oddEven()">
-                    <h-list :levels="group.list" :uses-mw-native-popup="usesMwNativePopup" :process-popup="processPopup"></h-list>
+                    <h-list :levels="group.list"
+                            :uses-mw-native-popup="usesMwNativePopup"
+                            :shows-birthday="showsBirthday"
+                            :process-popup="processPopup"></h-list>
                 </div>
             </template>
         </template>
@@ -494,7 +508,10 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                             </span>
                         </div>
                         <div v-if="subgroup.list.length > 0" :class="'navbox-list navbox-cell ' + oddEven()">
-                            <h-list :levels="subgroup.list" :uses-mw-native-popup="usesMwNativePopup" :process-popup="processPopup"></h-list>
+                            <h-list :levels="subgroup.list"
+                                    :uses-mw-native-popup="usesMwNativePopup"
+                                    :shows-birthday="showsBirthday"
+                                    :process-popup="processPopup"></h-list>
                         </div>
                     
                     </template>
