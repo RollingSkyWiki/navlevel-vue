@@ -27,3 +27,18 @@ $.getScript('https://cdn.jsdelivr.net/gh/RollingSkyWiki/navlevel-vue@<HASH>/dist
 
 
 如果您是用户：请在您的[Special:参数设置](https://rs.miraheze.org/wiki/Special:Preferences)中启用此小工具。
+
+### 扩展接口
+25DecD版本暴露了一系列API给用户使用，用户可以通过它们来自定义更多的分组和排序规则。
+
+您需要通过`window.NavLevel`这一全局变量来使用。注意，无论先于还是晚于此小工具运行，您的配置都会生效。具体地说：
+- 若在此小工具加载前，`window.NavLevel`不存在，你需要手动定义一个对象。当此小工具加载时，它将这个对象的配置应用到小工具内部。
+- 若在此小工具加载后，`window.NavLevel`已被此小工具定义，此对象中的`Sorting`、`sortingFunctions`、`Grouping`、`groupingFunctions`就是此小工具内部的配置内容。修改它们的内容会立即生效，因为是同一个对象。
+
+由于此小工具的代码是通过JSDelivr加载的，并不是直接写在`MediaWiki:Gadget-navlevel.js`中的，所以不能保证您在`User:<用户名>/common.js`中的代码一定比此小工具晚运行。因此，您最好同时考虑上面两种情况。最佳实践是添加`window.NavLevel = window.NavLevel || { Sorting: {}, sortingFunctions: {}, Grouping: {}, groupingFunctions: {} };`，之后再添加您的配置。
+
+除了自定义分组和排序方式，您还可以通过`window.NavLevel.processPopup(levelEntry, divElement)`来自定义弹窗内容。该函数接受一个`levelEntry`对象和一个`<div>`元素的DOM对象（这个`<div>`就是弹窗），您可以在其中对div元素进行修改。
+
+如果您嫌您的用户脚本加载过慢以至于此小工具挂载后还要数百毫秒才能应用您的配置的话，您可以选择使用[TamperMonkey](https://www.tampermonkey.net/)脚本来代替`User:<用户名>/common.js`，并将加载时机设为`document-start`。这样，此小工具加载时会直接应用您的配置，您在应用挂载时就能直接看到自定义的分组排序方式。
+
+您可以参考[此仓库](https://github.com/Zes-Minkey-Young/navlevel-tenableH)来使用扩展配置。
