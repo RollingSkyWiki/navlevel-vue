@@ -37,7 +37,33 @@ $.getScript('https://cdn.jsdelivr.net/gh/RollingSkyWiki/navlevel-vue@<HASH>/dist
 
 由於此小工具的代碼是通過JSDelivr加載的，並不是直接寫在`MediaWiki:Gadget-navlevel.js`中的，所以不能保證您在`User:<用戶名>/common.js`中的代碼一定比此小工具晚運行。因此，您最好同時考慮上面兩種情況。最佳實踐是添加`window.NavLevel = window.NavLevel || { Sorting: {}, sortingFunctions: {}, Grouping: {}, groupingFunctions: {} };`，之後再添加您的配置。
 
-除了自定義分組和排序方式，您還可以通過`window.NavLevel.processPopup(levelEntry, divElement)`來自定義彈窗內容。該函數接受一個`levelEntry`對象和一個`<div>`元素的DOM對象（這個`<div>`就是彈窗），您可以在其中對div元素進行修改。
+除了自定義分組和排序方式，您還可以通過`window.NavLevel.processPopup(levelEntry, divElement)`來自定義彈窗內容。該函數接受一個`levelEntry`對象和一個`<div>`元素的DOM對象（這個`<div>`就是彈窗），您可以在其中對div元素進行修改。目前`LevelEntry`的結構如下：
+```ts
+export interface LevelEntry {
+    /** 帶繁簡轉換的中文名 */
+    name: string;
+    /** 序號 */
+    num: number;
+    /** 頁面名 */
+    page: string;
+    /** 星數 */
+    stars: number;
+    /** 類型 */
+    type: "共創" | "官方";
+    /** 首次出現版本 */
+    inVer: string;
+    /** 移除版本 */
+    remVer: string;
+    /** 恢復版本 */
+    resVer: string;
+    /** 首次出現版本的發布日期 */
+    inDate: string;
+    /** 獎勵方式 */
+    award: "none" | "crown" | "present";
+    /** 鑽石數 */
+    dia: number;
+}
+```
 
 如果您嫌您的用戶腳本加載過慢以至於此小工具掛載後還要數百毫秒才能應用您的配置的話，您可以選擇使用[TamperMonkey](https://www.tampermonkey.net/)腳本來代替`User:<用戶名>/common.js`，並將加載時機設為`document-start`。這樣，此小工具加載時會直接應用您的配置，您在應用掛載時就能直接看到自定義的分組排序方式。
 

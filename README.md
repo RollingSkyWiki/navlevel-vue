@@ -37,7 +37,33 @@ $.getScript('https://cdn.jsdelivr.net/gh/RollingSkyWiki/navlevel-vue@<HASH>/dist
 
 由于此小工具的代码是通过JSDelivr加载的，并不是直接写在`MediaWiki:Gadget-navlevel.js`中的，所以不能保证您在`User:<用户名>/common.js`中的代码一定比此小工具晚运行。因此，您最好同时考虑上面两种情况。最佳实践是添加`window.NavLevel = window.NavLevel || { Sorting: {}, sortingFunctions: {}, Grouping: {}, groupingFunctions: {} };`，之后再添加您的配置。
 
-除了自定义分组和排序方式，您还可以通过`window.NavLevel.processPopup(levelEntry, divElement)`来自定义弹窗内容。该函数接受一个`levelEntry`对象和一个`<div>`元素的DOM对象（这个`<div>`就是弹窗），您可以在其中对div元素进行修改。
+除了自定义分组和排序方式，您还可以通过`window.NavLevel.processPopup(levelEntry, divElement)`来自定义弹窗内容。该函数接受一个`levelEntry`对象和一个`<div>`元素的DOM对象（这个`<div>`就是弹窗），您可以在其中对div元素进行修改。目前`LevelEntry`的结构如下：
+```ts
+export interface LevelEntry {
+    /** 带繁简转换的中文名 */
+    name: string;
+    /** 序号 */
+    num: number;
+    /** 页面名 */
+    page: string;
+    /** 星数 */
+    stars: number;
+    /** 类型 */
+    type: "共创" | "官方";
+    /** 首次出现版本 */
+    inVer: string;
+    /** 移除版本 */
+    remVer: string;
+    /** 恢复版本 */
+    resVer: string;
+    /** 首次出现版本的发布日期 */
+    inDate: string;
+    /** 奖励方式 */
+    award: "none" | "crown" | "present";
+    /** 钻石数 */
+    dia: number;
+}
+```
 
 如果您嫌您的用户脚本加载过慢以至于此小工具挂载后还要数百毫秒才能应用您的配置的话，您可以选择使用[TamperMonkey](https://www.tampermonkey.net/)脚本来代替`User:<用户名>/common.js`，并将加载时机设为`document-start`。这样，此小工具加载时会直接应用您的配置，您在应用挂载时就能直接看到自定义的分组排序方式。
 
