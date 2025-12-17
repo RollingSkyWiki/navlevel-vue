@@ -1,8 +1,5 @@
 {
-  "name": "wikiwindows",
-  "module": "index.ts",
-  "type": "module",
-  "version": "0.3.0",
+  "private": true,
   "devDependencies": {
     "@types/bun": "latest",
     "@vitejs/plugin-vue": "^6.0.2",
@@ -23,11 +20,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build --mode production",
-    "build:dev": "vite build --watch --mode development",
-    "preview": "vite preview",
     "b": "vite build --mode production",
-    "d": "vite build --watch --mode development",
     "cz": "bun scripts/convert-zh.js",
     "bt": "bun build test/testData.ts --outfile test/test.js"
   }
