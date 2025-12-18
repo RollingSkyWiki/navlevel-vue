@@ -1,0 +1,894 @@
+{
+	"云": [
+		1,
+		1
+	],
+	"晴天": [
+		1,
+		1.1
+	],
+	"梦之队": [
+		1.2,
+		1.2
+	],
+	"热带潮汐": [
+		1.2,
+		1.3
+	],
+	"蜜境": [
+		1.3,
+		1.3
+	],
+	"山丘": [
+		1.3,
+		1.4
+	],
+	"星域": [
+		1.3,
+		1.4
+	],
+	"冬日": [
+		1.4,
+		1.5
+	],
+	"海啸": [
+		1.4,
+		1.6
+	],
+	"原子能": [
+		1.5,
+		1.5
+	],
+	"幻想": [
+		1.5,
+		1.7
+	],
+	"启明星": [
+		1.7,
+		1.8
+	],
+	"骷髅派对": [
+		1.7,
+		2
+	],
+	"蛛网": [
+		1.7,
+		2.1
+	],
+	"荷鲁斯之眼": [
+		1.6,
+		2.3
+	],
+	"南瓜灯": [
+		1.8,
+		2.4
+	],
+	"永恒": [
+		1.8,
+		2.4
+	],
+	"空间站": [
+		1.8,
+		2.6
+	],
+	"小丑乐园": [
+		1.8,
+		2.7
+	],
+	"车间": [
+		1.9,
+		2.1
+	],
+	"音·悦": [
+		1.9,
+		null
+	],
+	"天空": [
+		2,
+		2.1
+	],
+	"狂热派对": [
+		2,
+		3
+	],
+	"旷野余韵": [
+		2.1,
+		2.5
+	],
+	"激光之城": [
+		2.1,
+		2.8
+	],
+	"童话": [
+		2.1,
+		null
+	],
+	"雪夜": [
+		2.2,
+		null
+	],
+	"幻影阵": [
+		2.3,
+		2.8
+	],
+	"万圣节逃生": [
+		2.3,
+		null
+	],
+	"金色圣诞节": [
+		2.3,
+		null
+	],
+	"立方工坊": [
+		2.3,
+		null
+	],
+	"极速挑战": [
+		2.5,
+		null
+	],
+	"庙会": [
+		2.5,
+		null
+	],
+	"8比特": [
+		2.4,
+		null
+	],
+	"星辰": [
+		2.5,
+		null
+	],
+	"灯神": [
+		2.5,
+		null
+	],
+	"樱落": [
+		2.5,
+		null
+	],
+	"Alone Remix": [
+		2.6,
+		2.9
+	],
+	"王牌": [
+		2.7,
+		null
+	],
+	"荒区": [
+		2.7,
+		null
+	],
+	"桑巴": [
+		2.7,
+		null
+	],
+	"永恒之旅": [
+		2.7,
+		null
+	],
+	"炫光": [
+		2.7,
+		null
+	],
+	"影武士": [
+		2.9,
+		null
+	],
+	"绿茵战场": [
+		2.9,
+		null
+	],
+	"迷踪": [
+		"3.?",
+		null
+	],
+	"深渊陷阱": [
+		"3.?",
+		null
+	],
+	"蓄能器": [
+		2.9,
+		null
+	],
+	"赞歌": [
+		null,
+		null
+	],
+	"时光机": [
+		null,
+		null
+	],
+	"海底世界": [
+		null,
+		null
+	],
+	"浪漫午后": [
+		null,
+		null
+	],
+	"双子星": [
+		null,
+		null
+	],
+	"森林": [
+		null,
+		null
+	],
+	"糖果": [
+		null,
+		null
+	],
+	"Faded": [
+		null,
+		null
+	],
+	"图腾": [
+		null,
+		null
+	],
+	"对弈纵横": [
+		null,
+		null
+	],
+	"战斗堡垒": [
+		null,
+		null
+	],
+	"电玩城": [
+		null,
+		null
+	],
+	"彩虹城堡": [
+		null,
+		null
+	],
+	"沙漠": [
+		null,
+		null
+	],
+	"风雨同行": [
+		null,
+		null
+	],
+	"焰火": [
+		null,
+		null
+	],
+	"冠军赛": [
+		null,
+		null
+	],
+	"亡灵之舞": [
+		null,
+		null
+	],
+	"午夜巡游": [
+		null,
+		null
+	],
+	"动感方块": [
+		null,
+		null
+	],
+	"彼岸": [
+		null,
+		null
+	],
+	"功夫": [
+		null,
+		null
+	],
+	"Faded Remix": [
+		null,
+		null
+	],
+	"Alone": [
+		null,
+		null
+	],
+	"矩阵浪潮": [
+		null,
+		null
+	],
+	"奇妙甜品屋": [
+		null,
+		null
+	],
+	"捣蛋节": [
+		null,
+		null
+	],
+	"机动核心": [
+		null,
+		null
+	],
+	"格赫罗斯": [
+		null,
+		null
+	],
+	"周年庆": [
+		null,
+		null
+	],
+	"重生": [
+		null,
+		null
+	],
+	"海盗船": [
+		null,
+		null
+	],
+	"解锁未来": [
+		null,
+		null
+	],
+	"巴西狂欢节": [
+		null,
+		null
+	],
+	"美食诱惑": [
+		null,
+		null
+	],
+	"雾都": [
+		null,
+		null
+	],
+	"极光之旅": [
+		null,
+		null
+	],
+	"圣诞福音": [
+		null,
+		null
+	],
+	"火山": [
+		null,
+		null
+	],
+	"西部": [
+		null,
+		null
+	],
+	"精灵镇": [
+		null,
+		null
+	],
+	"数码方阵": [
+		null,
+		null
+	],
+	"王国战争": [
+		null,
+		null
+	],
+	"灼热未来": [
+		null,
+		null
+	],
+	"峡谷奇遇": [
+		null,
+		null
+	],
+	"废土狂沙": [
+		null,
+		null
+	],
+	"马戏团": [
+		null,
+		null
+	],
+	"酋长": [
+		null,
+		null
+	],
+	"炽热赛道": [
+		null,
+		null
+	],
+	"城市": [
+		null,
+		null
+	],
+	"星际跃迁": [
+		null,
+		null
+	],
+	"殿堂遗址": [
+		null,
+		null
+	],
+	"恶灵群舞": [
+		null,
+		null
+	],
+	"Alone II": [
+		null,
+		null
+	],
+	"迷城": [
+		null,
+		null
+	],
+	"热恋": [
+		null,
+		null
+	],
+	"海战": [
+		null,
+		null
+	],
+	"VR幻境": [
+		null,
+		null
+	],
+	"科技": [
+		null,
+		null
+	],
+	"俄罗斯方块": [
+		null,
+		null
+	],
+	"竞速传奇": [
+		null,
+		null
+	],
+	"亡灵节": [
+		null,
+		null
+	],
+	"The Spectre": [
+		null,
+		null
+	],
+	"遗迹": [
+		null,
+		null
+	],
+	"生日派对": [
+		null,
+		null
+	],
+	"雷鬼": [
+		null,
+		null
+	],
+	"晨光熹微": [
+		null,
+		null
+	],
+	"怪物城市": [
+		null,
+		null
+	],
+	"枢纽": [
+		null,
+		null
+	],
+	"恐龙迪斯科": [
+		null,
+		null
+	],
+	"克苏鲁": [
+		null,
+		null
+	],
+	"百变圣诞夜": [
+		null,
+		null
+	],
+	"时间": [
+		null,
+		null
+	],
+	"街头篮球": [
+		null,
+		null
+	],
+	"落日余晖": [
+		null,
+		null
+	],
+	"机甲": [
+		null,
+		null
+	],
+	"神灯": [
+		null,
+		null
+	],
+	"埃及": [
+		null,
+		null
+	],
+	"音律派对": [
+		null,
+		null
+	],
+	"棋城要塞": [
+		null,
+		null
+	],
+	"裂变": [
+		null,
+		null
+	],
+	"游乐园": [
+		null,
+		null
+	],
+	"积木": [
+		null,
+		null
+	],
+	"天空之城": [
+		null,
+		null
+	],
+	"万圣节": [
+		null,
+		null
+	],
+	"工业基地": [
+		null,
+		null
+	],
+	"花舞": [
+		null,
+		null
+	],
+	"机械动力": [
+		null,
+		null
+	],
+	"翡翠城": [
+		null,
+		null
+	],
+	"开普勒的梦": [
+		null,
+		null
+	],
+	"春节": [
+		null,
+		null
+	],
+	"微芯片": [
+		null,
+		null
+	],
+	"视界巡航": [
+		null,
+		null
+	],
+	"海洋": [
+		null,
+		null
+	],
+	"电子迷宫": [
+		null,
+		null
+	],
+	"深空": [
+		null,
+		null
+	],
+	"绿野仙踪": [
+		null,
+		null
+	],
+	"扑克": [
+		null,
+		null
+	],
+	"驯鹿之礼": [
+		null,
+		null
+	],
+	"万圣嘉年华": [
+		null,
+		null
+	],
+	"圣诞": [
+		null,
+		null
+	],
+	"鬼侍": [
+		null,
+		null
+	],
+	"霓虹": [
+		null,
+		null
+	],
+	"橄榄球": [
+		null,
+		null
+	],
+	"The Spectre Remix": [
+		null,
+		null
+	],
+	"机械玩具": [
+		null,
+		null
+	],
+	"蒸汽时代": [
+		null,
+		null
+	],
+	"迷幻音浪": [
+		null,
+		null
+	],
+	"怪盗": [
+		null,
+		null
+	],
+	"恐龙谷": [
+		null,
+		null
+	],
+	"世界杯": [
+		null,
+		null
+	],
+	"像素": [
+		null,
+		null
+	],
+	"魔法屋": [
+		null,
+		null
+	],
+	"笙·宴": [
+		null,
+		null
+	],
+	"竞技乐园": [
+		null,
+		null
+	],
+	"开心": [
+		null,
+		null
+	],
+	"管道": [
+		null,
+		null
+	],
+	"几何迷阵": [
+		null,
+		null
+	],
+	"新年": [
+		null,
+		null
+	],
+	"万圣惊魂夜": [
+		null,
+		null
+	],
+	"涅槃": [
+		6.5,
+		7.1
+	],
+	"生日快乐": [
+		6.6,
+		7
+	],
+	"电·爱": [
+		6.7,
+		7.1
+	],
+	"四周年": [
+		6.8,
+		7.1
+	],
+	"玉兔祥云": [
+		[
+			6.9,
+			7.1,
+			"无烟花"
+		],
+		[
+			6.9,
+			7.3,
+			"全烟花"
+		]
+	],
+	"时·忆": [
+		[
+			6.9,
+			7.4,
+			"无烟花"
+		],
+		[
+			6.9,
+			7.5,
+			"全烟花"
+		]
+	],
+	"萌萌喵喵": [
+		null,
+		null
+	],
+	"星穹秘城": [
+		null,
+		null
+	],
+	"未来隐都": [
+		null,
+		null
+	],
+	"彗界": [
+		null,
+		null
+	],
+	"开拓": [
+		null,
+		null
+	],
+	"夜光螈舞曲": [
+		null,
+		null
+	],
+	"微光溶洞": [
+		null,
+		null
+	],
+	"极夜漫行": [
+		null,
+		null
+	],
+	"极地探险": [
+		null,
+		null
+	],
+	"海滨港湾": [
+		null,
+		null
+	],
+	"灯塔巷": [
+		null,
+		null
+	],
+	"辉光海": [
+		null,
+		null
+	],
+	"潮汐烁影": [
+		null,
+		null
+	],
+	"鸣茧": [
+		null,
+		null
+	],
+	"新生": [
+		null,
+		null
+	],
+	"果糖瀑布": [
+		null,
+		null
+	],
+	"水果天堂": [
+		null,
+		null
+	],
+	"万花筒": [
+		null,
+		null
+	],
+	"光影": [
+		null,
+		null
+	],
+	"失控": [
+		null,
+		null
+	],
+	"心碎": [
+		null,
+		null
+	],
+	"熔炉": [
+		null,
+		null
+	],
+	"工业时代": [
+		null,
+		null
+	],
+	"萤光谷": [
+		null,
+		null
+	],
+	"灵光沙海": [
+		null,
+		null
+	],
+	"沙滩派对": [
+		null,
+		null
+	],
+	"午夜迪斯科": [
+		null,
+		null
+	],
+	"假面舞会": [
+		null,
+		null
+	],
+	"盛典游行": [
+		null,
+		null
+	],
+	"生物实验室": [
+		null,
+		null
+	],
+	"核能": [
+		null,
+		null
+	],
+	"缝纫工厂": [
+		null,
+		null
+	],
+	"针织王国": [
+		null,
+		null
+	],
+	"辉闪弦月": [
+		null,
+		null
+	],
+	"观象台": [
+		null,
+		null
+	],
+	"月夜剧院": [
+		null,
+		null
+	],
+	"音乐剧场": [
+		null,
+		null
+	],
+	"和声街道": [
+		null,
+		null
+	],
+	"旋律大都市": [
+		null,
+		null
+	],
+	"律动精灵": [
+		null,
+		null
+	],
+	"跳动之城": [
+		null,
+		null
+	],
+	"部落寻猎": [
+		null,
+		null
+	],
+	"丛林探险": [
+		null,
+		null
+	],
+	"异变危机": [
+		null,
+		null
+	],
+	"绝密实验室": [
+		null,
+		null
+	]
+}

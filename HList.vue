@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 
-import { type LevelEntry } from './data';
+import { type LevelEntry as PartialLevelEntry } from './data';
 import { convByVar } from './hanassist';
 import { getVariantedLevelName } from './variants';
 import { isCurrentPage as icp1 } from './data';
@@ -11,7 +11,9 @@ import PopupVue from './Popup.vue';
 
 const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
 
-defineProps<{
+type LevelEntry = PartialLevelEntry & { difficulty: [number, number] | [[number, number, string], [number, number, string]] }
+
+const props = defineProps<{
     levels: LevelEntry[];
     usesMwNativePopup: boolean;
     showsBirthday: boolean;
@@ -62,6 +64,22 @@ function todayIsBirthday(level: LevelEntry) {
     const td = Number(todayStr.substring(8, 10));
     return m === tm && d === td;
 }
+
+function numOrNull(num: number | null) {
+    return !num ? "?.?" : (num.toFixed?.(1) || num);
+}
+
+function difficulty(difficulty: [number, number] | [number, number, string]) {
+    console.log(difficulty)
+    if (!difficulty) {
+        return "?.?/?.?"
+    } else if (difficulty[2]) {
+        return `${numOrNull(difficulty[0])}/${numOrNull(difficulty[1])}（${difficulty[2]}）`
+    } else {
+        return `${numOrNull(difficulty[0])}/${numOrNull(difficulty[1])}`
+    }
+}
+console.log(props.levels)
 </script>
 <template>
     <ul class="hlist">
@@ -81,6 +99,14 @@ function todayIsBirthday(level: LevelEntry) {
                 </span><br>
                 {{ `${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎` }}
                 <br>
+                <span v-if="Array.isArray(level.difficulty?.[0])" style="font-size: 120%;">
+                    {{ difficulty(level.difficulty[0]) }}<br/>
+                    {{ difficulty(level.difficulty[1] as [number, number, string]) }}
+                </span>
+                <span v-else style="font-size: 140%;">
+                    {{ difficulty(level.difficulty as [number, number]) }}
+                </span>
+                <br/>
                 <a :href="'/wiki/' + level.inVer">{{ level.inVer }}</a>{{ `(${level.inDate || '????-??-??'})${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}` }}
             </popup-vue>
         </li>

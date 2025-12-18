@@ -15,11 +15,12 @@ import { init } from "./expose";
 const dataModule = import.meta.env.DEV ? devData : prodData;
 const { saveOptionsToStorage, loadOptionsFromStorage } = dataModule;
 
-type LevelEntry = prodData.LevelEntry;
+type LevelEntry = prodData.LevelEntry & { difficulty: [number, number] | [[number, number, string], [number, number, string]]};
 
 const props = defineProps<{
     recvData: LevelEntry[];
     recvLevels: string[];
+    recvDifficulty: prodData.DiffcultyData;
     /** 保留的服务端渲染的DOM元素数组，在这里指"其他"一行等多个元素 */
     preserveElements: HTMLElement[];
     /** 保留的DOM元素数组，插入在内容之前 */
@@ -29,7 +30,15 @@ const props = defineProps<{
 
 const data = ref(props.recvData);
 const levels = ref(props.recvLevels);
+const diffculty = props.recvDifficulty;
 
+function mergeDifficulty(levels: prodData.LevelEntry[], difficulty: prodData.DiffcultyData) {
+    for (const level of levels) {
+        const name = level.page;
+        (level as LevelEntry).difficulty = difficulty[name];
+    }
+}
+mergeDifficulty(data.value, diffculty);
 
 // 使用响应式以便于后续添加
 const Grouping = reactive({
@@ -41,6 +50,8 @@ const Grouping = reactive({
     version: convByVar({ hans: "版本", hant: "版本" }),
     present: convByVar({ hans: "奖励方式", hant: "獎勵方式" }),
     year: convByVar({ hans: "年份", hant: "年份" }),
+    completeDifficulty: convByVar({ hans: "完成难度", hant: "完成難度" }),
+    perfectDifficulty: convByVar({ hans: "完美难度", hant: "完美難度" }),
     none: convByVar({ hans: "无", hant: "無" })
 });
 
@@ -55,6 +66,8 @@ const Sorting = reactive({
     name: convByVar({ hans: "名称", hant: "名稱" }),
     stars: convByVar({ hans: "星数", hant: "星數" }),
     date: convByVar({ hans: "日期", hant: "日期" }),
+    completeDifficulty: convByVar({ hans: "完成难度", hant: "完成難度" }),
+    perfectDifficulty: convByVar({ hans: "完美难度", hant: "完美難度" }),
     default: convByVar({ hans: "默认", hant: "預設" })
 });
 watch(Sorting, () => {
@@ -179,6 +192,38 @@ function compare(a: LevelEntry, b: LevelEntry) {
     return 0;
 }
 
+function unwrapCanBeArray(canBeArray: any, i: number)  {
+    return Array.isArray(canBeArray) ? canBeArray[i] : canBeArray;
+}
+/**
+ * 
+ * @param entry 
+ * @param i 在难度数组中的位置（平民0，完美1）
+ */
+function intDifficultyOf(entry: LevelEntry, i: number) {
+    const diff = entry.difficulty;
+    const rawComplete = unwrapCanBeArray(diff[i], 0);
+    if (!rawComplete) {
+        return entry.stars;
+    } else if (typeof rawComplete === "string") {
+        return parseInt(rawComplete);
+    } else { // 这里认为是数字
+        return Math.floor(rawComplete);
+    }
+}
+
+function diffcultyOf(entry: LevelEntry, i: number) {
+    const diff = entry.difficulty;
+    const rawComplete = unwrapCanBeArray(diff[i], 0);
+    if (!rawComplete) {
+        return entry.stars - 0.01; // 保证这些未填入数据的关卡难度值在最小的之前
+    } else if (typeof rawComplete === "string") {
+        return parseInt(rawComplete) - 0.01;
+    } else { // 这里认为是数字
+        return rawComplete;
+    }
+}
+
 const groupingFunctions = {
     era(entries: LevelEntry[]) {
         return [
@@ -277,6 +322,34 @@ const groupingFunctions = {
         }
         return groups;
     },
+    completeDifficulty(entries: LevelEntry[]) { 
+        const integers = new Set<number>();
+        for (const entry of entries) {
+            integers.add(intDifficultyOf(entry, 0));
+        }
+        return Array.from(integers)
+            .sort((a, b) => a - b)
+            .map((stars) => ({
+                group: stars + ".x",
+                list: entries.filter(entry => 
+                    intDifficultyOf(entry, 0) === stars
+                )
+            }))
+    },
+    perfectDifficulty(entries: LevelEntry[]) {
+        const integers = new Set<number>();
+        for (const entry of entries) {
+            integers.add(intDifficultyOf(entry, 1));
+        }
+        return Array.from(integers)
+            .sort((a, b) => a - b)
+            .map((stars) => ({
+                group: stars + ".x",
+                list: entries.filter(entry => 
+                    intDifficultyOf(entry, 1) === stars
+                )
+            }))
+    },
     // 只是个占位符
     none(entries: LevelEntry[]) {
         return entries as unknown as { group: string, list: LevelEntry[] }[];
@@ -295,6 +368,12 @@ const sortingFunctions = {
     },
     date: (a: LevelEntry, b: LevelEntry): number => {
         return a.inDate.localeCompare(b.inDate);
+    },
+    completeDifficulty: (a: LevelEntry, b: LevelEntry): number => {
+        return diffcultyOf(a, 0) - diffcultyOf(b, 0);
+    },
+    perfectDifficulty: (a: LevelEntry, b: LevelEntry): number => {
+        return diffcultyOf(a, 1) - diffcultyOf(b, 1);
     },
     default: (a: LevelEntry, b: LevelEntry): number => {
         const levs = levels.value;
@@ -375,7 +454,7 @@ function oddEven() {
 }
 
 async function purge() {
-    const { levels: pLevels, data: pData } = await dataModule.hotPurge();
+    const { levels: pLevels, data: pData, difficulty: pDifficulty } = await dataModule.hotPurge();
     if (pLevels) {
         levels.value = pLevels;
     } else {
@@ -385,7 +464,8 @@ async function purge() {
         }), { type: 'error' });
     }
     if (pData) {
-        data.value = pData;
+        // @ts-expect-error 这里会对data带来副作用
+        data.value = mergeDifficulty(pData, pDifficulty);
     } else {
         mw.notify(convByVar({
             hans: `获取关卡${autospace("Cargo")}数据失败。`,

@@ -12,13 +12,14 @@ async function initNavLevel() {
     // 开发环境使用模拟数据，生产环境使用真实数据
     const dataModule = import.meta.env.DEV ? devData : prodData;
     
-    const { getData, getValidLevels } = dataModule;
+    const { getData, getValidLevels, getDifficulty } = dataModule;
     
     try {
         // 先获取数据
-        const [data, levels] = await Promise.all([
+        const [data, levels, difficulty] = await Promise.all([
             getData(),
-            getValidLevels()
+            getValidLevels(),
+            getDifficulty()
         ]);
         
         // 检查是否为空值
@@ -52,6 +53,7 @@ async function initNavLevel() {
             const app = Vue.createApp(Nav, {
                 recvData: data,
                 recvLevels: levels,
+                recvDifficulty: difficulty,
                 preserveElements: preserveElements,
                 preserveBeforeElements: preserveBeforeElements,
                 titleElement: navbox.querySelector('.navbox-title') || document.createElement('div')

@@ -1,4 +1,5 @@
 {
+  "name": "navlevel-vue",
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",

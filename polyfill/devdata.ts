@@ -1,9 +1,10 @@
 // 开发环境数据
-import { type LevelEntry, type Options } from '../data';
+import { type DiffcultyData, type LevelEntry, type Options } from '../data';
 
 // 从 cargo.json 导入的真实关卡数据
 import cargoData from './cargo.json';
 import levelsData from './levels.json';
+import difficultyData from './difficulty.json';
 
 // 开发环境选项配置
 
@@ -30,6 +31,10 @@ export async function getData(): Promise<LevelEntry[] | null> {
     return mockLevels;
 }
 
+export async function getDifficulty(): Promise<DiffcultyData | null> {
+    return difficultyData;
+}
+
 export async function getValidLevels(): Promise<string[] | null> {
     // 模拟网络延迟
     await new Promise(resolve => setTimeout(resolve, 300));
@@ -41,5 +46,5 @@ export function isCurrentPage(page: string) {
 }
 
 export async function hotPurge() {
-    return { levels: mockValidLevels, data: mockLevels };
+    return { levels: mockValidLevels, data: mockLevels, difficulty: difficultyData };
 }

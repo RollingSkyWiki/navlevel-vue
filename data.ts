@@ -2,6 +2,7 @@
 
 const KEY = 'rswiki:NavLevel-data'
 const LEVEL_KEY = 'rswiki:NavLevel-levels'
+const DIFFICULTY_KEY = 'rswiki:NavLevel-difficulty';
 const EXPIRY_KEY = 'rswiki:NavLevel-expiry'
 const OPTIONS_KEY = 'rswiki:NavLevel-options'
 const REJECT_THRESHOLD = 210; // 当前有218个非饭制关卡，如果钻取到的数据低于210，则认为数据无效，使用旧数据
@@ -113,12 +114,42 @@ export async function getValidLevels(): Promise<string[] | null> {
     return levels;
 }
 
+export async function fetchDifficulty(): Promise<DiffcultyData | null> {
+    const res = await fetch(ORIGIN + "wiki/Module:Difficulty/data.json?action=raw");
+    if (!res.ok) {
+        return null;
+    }
+    const text = await res.text();
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        return null;
+    }
+}
+
+export async function getDifficulty(): Promise<DiffcultyData | null> {
+    let difficulty = mw.storage.getObject(DIFFICULTY_KEY);
+
+    if (difficulty) {
+        return difficulty;
+    }
+
+    difficulty = await fetchDifficulty();
+    mw.storage.setObject(DIFFICULTY_KEY, difficulty, EXPIRY_SECS);
+    return difficulty;
+}
+
+
 export interface Options {
     grouping1: string;
     grouping2: string;
     sortingPriority: string[];
     direction: string;
     showsBirthday: boolean;
+}
+
+export type DiffcultyData = {
+    [key: string]: [number, number] | [[number, number, string], [number, number, string]]
 }
 
 export function saveOptionsToStorage(options: Options) {
@@ -141,17 +172,21 @@ export function isCurrentPage(page: string) {
 /**
  * 重新强制获取数据，*不会*刷新页面
  */
-export async function hotPurge(): Promise<{ levels: string[] | null, data: LevelEntry[] | null }> {
+export async function hotPurge(): Promise<{ levels: string[] | null, data: LevelEntry[] | null, difficulty: DiffcultyData | null }> {
     const levels = await fetchLevels();
     const data = await fetchData();
+    const difficulty = await fetchDifficulty();
     if (levels) {
         mw.storage.setObject(LEVEL_KEY, levels, EXPIRY_SECS);
+    }
+    if (difficulty) {
+        mw.storage.setObject(DIFFICULTY_KEY, difficulty, EXPIRY_SECS);
     }
     if (data) { // 不使用mediawiki的storage，因为需要手动处理fallback
         localStorage.setItem(KEY, JSON.stringify(data));
         localStorage.setItem(EXPIRY_KEY, String(Date.now() + EXPIRY_MS));
     }
-    return { levels, data };
+    return { levels, data, difficulty };
 }
 
 export interface LevelEntry {
