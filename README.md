@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/user/b49b94e1-39ce-4f3b-b607-4f889b5797ef/project/1e6579ca-651c-4596-9234-9eee92eadbcc.svg)](https://wakatime.com/badge/user/b49b94e1-39ce-4f3b-b607-4f889b5797ef/project/1e6579ca-651c-4596-9234-9eee92eadbcc)
+
 [繁體中文](README-hant.md)
 
 此项目用于[滚动的天空Wiki](https://rs.miraheze.org/)的基于Cargo扩展（可不是Rust）的关卡导航框智能分组排序小工具。
