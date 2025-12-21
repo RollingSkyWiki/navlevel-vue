@@ -425,10 +425,10 @@ function sort() {
     // 如果grouping1和grouping2相同，
     // 强制修改grouping2
     const vgrouping1 = validateGrouping(grouping1.value, "type") as Grouping;
-    const vgrouping2 = validateGrouping(grouping2.value, "stars") as Grouping;
+    let vgrouping2 = validateGrouping(grouping2.value, "stars") as Grouping;
 
     if (vgrouping1 === vgrouping2 && vgrouping2 !== 'none') {
-        grouping2.value = vgrouping1 === 'stars' ? 'type' : 'stars';
+        grouping2.value = vgrouping2 = vgrouping1 === 'stars' ? 'type' : 'stars';
     }
     if (vgrouping1 === 'none') {
         grouping2.value = 'none';
