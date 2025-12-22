@@ -70,7 +70,6 @@ function numOrNull(num: number | null) {
 }
 
 function difficulty(difficulty: [number, number] | [number, number, string]) {
-    console.log(difficulty)
     if (!difficulty) {
         return "?.?/?.?"
     } else if (difficulty[2]) {
@@ -79,7 +78,7 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
         return `${numOrNull(difficulty[0])}/${numOrNull(difficulty[1])}`
     }
 }
-console.log(props.levels)
+
 </script>
 <template>
     <ul class="hlist">
