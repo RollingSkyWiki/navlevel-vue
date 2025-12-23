@@ -250,7 +250,9 @@ const groupingFunctions = {
     version(entries: LevelEntry[]) {
         const seenVersions = new Set<string>();
         entries.forEach(entry => seenVersions.add(entry.inVer.substring(0, 1)));
-        seenVersions.delete("3");
+        if (seenVersions.has("2")) {
+            seenVersions.delete("3");
+        }
         const versions = Array.from(seenVersions).sort((a, b) => a.localeCompare(b));
         return versions.map(v => ({
             group: v === "2" ? "2.x / 3.x" : v + ".x",
