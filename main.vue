@@ -35,7 +35,7 @@ const diffculty = props.recvDifficulty;
 function mergeDifficulty(levelData: prodData.LevelEntry[], difficulty: prodData.DiffcultyData) {
     for (const level of levelData) {
         const name = level.page;
-        (level as LevelEntry).difficulty = difficulty[name];
+        (level as LevelEntry).difficulty = difficulty[name] ?? [null, null];
     }
     return levelData;
 }
