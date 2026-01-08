@@ -11,6 +11,8 @@ const EXPIRY_MS = EXPIRY_SECS * 1000;
 
 const ORIGIN = "https://rs.miraheze.org/";
 
+const REL_SEP = "、";
+
 export async function fetchData(): Promise<LevelEntry[] | null> {
     const res = await (new mw.Api).get({
         action: 'cargoquery',
@@ -19,7 +21,7 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
         fields: "\
 Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars, \
 Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer, \
-Level.award = award, Level.diamonds = dia, Version.date = inDate",
+Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.date = inDate",
         where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创') AND Level._pageName NOT LIKE '%（旧）'",
         join_on: "Level.first_came_version = Version._pageName",
         limit: 500
@@ -40,6 +42,7 @@ Level.award = award, Level.diamonds = dia, Version.date = inDate",
             name: item.title.name,
             award: item.title.award,
             dia: Number(item.title.dia),
+            rel: item.title.rel && item.title.rel !== "" ? item.title.rel.split(REL_SEP) : []
         } satisfies LevelEntry;
     });
     if (data.length < REJECT_THRESHOLD) {
@@ -146,6 +149,7 @@ export interface Options {
     sortingPriority: string[];
     direction: string;
     showsBirthday: boolean;
+    followsMain: boolean;
 }
 
 export type DiffcultyData = {
@@ -212,4 +216,6 @@ export interface LevelEntry {
     award: "none" | "crown" | "present";
     /** 钻石数 */
     dia: number;
+    /** 关卡的相关关卡列表，可能为空 */
+    rel: string[];
 }

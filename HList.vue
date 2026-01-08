@@ -17,6 +17,7 @@ const props = defineProps<{
     levels: LevelEntry[];
     usesMwNativePopup: boolean;
     showsBirthday: boolean;
+    followsMain: boolean;
     processPopup: (level: LevelEntry, div: HTMLDivElement) => void;
 }>();
 
@@ -88,6 +89,7 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
             @touchstart="focusLevel(level)"
             @focus="focusLevel(level)"
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
+            :style=" {fontWeight: followsMain && level.main === level ? 'bold' : ''} "
             :title="usesMwNativePopup ? extractNameFromEntry(level) : undefined"
             >
                 {{ extractNameFromEntry(level) }}{{ showsBirthday && todayIsBirthday(level) ? '🎂' : '' }}

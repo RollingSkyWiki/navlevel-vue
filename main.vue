@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CdxCheckbox, CdxRadio } from '@wikimedia/codex';
-import { onBeforeUpdate, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onBeforeUpdate, onMounted, reactive, ref, watch } from 'vue';
 import * as devData from './polyfill/devdata';
 import * as prodData from './data';
 import HList from './HList.vue';
@@ -15,7 +15,9 @@ import { init } from "./expose";
 const dataModule = import.meta.env.DEV ? devData : prodData;
 const { saveOptionsToStorage, loadOptionsFromStorage } = dataModule;
 
-type LevelEntry = prodData.LevelEntry & { difficulty: [number, number] | [[number, number, string], [number, number, string]]};
+type LevelEntry = prodData.LevelEntry
+    & { difficulty: [number, number] | [[number, number, string], [number, number, string]]}
+    & { main: LevelEntry };
 
 const props = defineProps<{
     recvData: LevelEntry[];
@@ -40,6 +42,54 @@ function mergeDifficulty(levelData: prodData.LevelEntry[], difficulty: prodData.
     return levelData;
 }
 mergeDifficulty(data.value, diffculty);
+
+/**
+ * 对每个关卡链接其相关主关卡。
+ * @param levelData 
+ */
+function link(levelData: prodData.LevelEntry[]) {
+    const levelDict = {} as Record<string, LevelEntry>;
+    for (const level of levelData) {
+        levelDict[level.page] = level as LevelEntry;
+    }
+    outer: for (const level of levelData) {
+        const rel = level.rel;
+        if (!rel) {
+            (level as LevelEntry).main = level as LevelEntry;
+            continue;
+        }
+        if (level.page === "沙滩派对" || level.page === "午夜迪斯科") {
+            (level as LevelEntry).main = levelDict["沙滩派对"] || level as LevelEntry;
+            // 沙滩派对是例外，不可由时间来判断
+            continue;
+        }
+        // 除了沙滩派对和午夜迪斯科这对关卡，其余关卡的主关都是同族关卡中最早推出的
+        let earliest: LevelEntry = level as LevelEntry;
+        if (level.page === "格赫罗斯") {
+            debugger
+        }
+        for (const related of rel) {
+            const entry = levelDict[related];
+            if (!entry) {
+                continue;
+            }
+            if (entry.main) { // 如果同族关已经确定了主关卡
+                (level as LevelEntry).main = entry.main;
+                continue outer;
+            }
+            if (entry.inDate < earliest.inDate || (entry.inDate === earliest.inDate && entry.stars > earliest.stars)) {
+                earliest = entry
+            }
+        }
+        (level as LevelEntry).main = earliest;
+        
+    }
+}
+
+
+link(data.value);
+
+console.log(data.value.forEach((e) => console.log(e.page, e.main.page, e, e.main)));
 
 // 使用响应式以便于后续添加
 const Grouping = reactive({
@@ -119,6 +169,11 @@ const direction = ref<Direction>(
 
 const usesMwNativePopup = ref(false);
 const showsBirthday = ref(options?.showsBirthday ?? false);
+const followsMain = ref(options?.followsMain ?? false);
+const validGrouping = new Set(["none", "era", "type"]);
+const followsMainAvailable = computed(() =>
+    validGrouping.has(grouping1.value) && validGrouping.has(grouping2.value))
+// 若要使用跟随主关，必须使用上面三种分组
 
 const defaultSorting: Sorting[] = ['default', 'num', 'date', 'name', 'stars']
 
@@ -185,6 +240,19 @@ function rawCompare(basis: Sorting): (a: LevelEntry, b: LevelEntry) => number {
 }
 
 function compare(a: LevelEntry, b: LevelEntry) {
+    if (followsMain.value && followsMainAvailable.value) {
+        if (a.main.page !== b.main.page) {
+            a = a.main;
+            b = b.main;
+        } else {
+            if (a.main.page === a.page) {
+                return -1;
+            } else if (b.main.page === b.page) {
+                return 1;
+            }
+            return a.main.rel.indexOf(a.page) - a.main.rel.indexOf(b.page);
+        }
+    }
     const prio = validateSortingPriority(sortingPriority.value);
     for (let i = 0; i < prio.length; i++) {
         const c = rawCompare(prio[i])(a, b);
@@ -420,6 +488,7 @@ function saveOptions() {
         sortingPriority: sortingPriority.value,
         direction: direction.value,
         showsBirthday: showsBirthday.value,
+        followsMain: followsMain.value
     })
 }
 
@@ -548,6 +617,8 @@ const LEV = convByVar({ hans: "关", hant: "關" });
         <div class="navlevel-radio-group">
             <cdx-checkbox :inline="true" v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
             <cdx-checkbox :inline="true" v-model:model-value="showsBirthday" @update:model-value="saveOptions()">{{ convByVar({ hans: "标记生日在今日（UTC+8）的关卡", hant: "標記生日在今日（按UTC+8）的關卡" })}}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="followsMain" @update:model-value="saveOptions();sort()">{{ followsMainAvailable ? convByVar({ hans: "绑定同族关卡", hant: "綁定同族關卡" })
+                : convByVar({ hans: "高亮主线（困难）关卡", hant: "高亮主線（困難）關卡"})}}</cdx-checkbox>
         </div>
     </div><!--
     <div class="navbox-above navbox-sole-row">
@@ -558,7 +629,8 @@ const LEV = convByVar({ hans: "关", hant: "關" });
             <h-list :levels="displayData"
                     :uses-mw-native-popup="usesMwNativePopup"
                     :shows-birthday="showsBirthday"
-                    :process-popup="processPopup"></h-list>
+                    :process-popup="processPopup"
+                    :follows-main="followsMain"></h-list>
         </div>
     </template>
     <template v-else>
@@ -573,7 +645,8 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                     <h-list :levels="group.list"
                             :uses-mw-native-popup="usesMwNativePopup"
                             :shows-birthday="showsBirthday"
-                            :process-popup="processPopup"></h-list>
+                            :process-popup="processPopup"
+                            :followsMain></h-list>
                 </div>
             </template>
         </template>
@@ -598,7 +671,9 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                             <h-list :levels="subgroup.list"
                                     :uses-mw-native-popup="usesMwNativePopup"
                                     :shows-birthday="showsBirthday"
-                                    :process-popup="processPopup"></h-list>
+                                    :process-popup="processPopup"
+                                    :followsMain
+                                    ></h-list>
                         </div>
                     
                     </template>
