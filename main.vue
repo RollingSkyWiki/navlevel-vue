@@ -538,6 +538,7 @@ async function purge() {
     if (pData) {
         // @ts-expect-error 这里会对data带来副作用
         data.value = mergeDifficulty(pData, pDifficulty);
+        link(data.value);
     } else {
         mw.notify(convByVar({
             hans: `获取关卡${autospace("Cargo")}数据失败。`,
