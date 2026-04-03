@@ -65,9 +65,6 @@ function link(levelData: prodData.LevelEntry[]) {
         }
         // 除了沙滩派对和午夜迪斯科这对关卡，其余关卡的主关都是同族关卡中最早推出的
         let earliest: LevelEntry = level as LevelEntry;
-        if (level.page === "格赫罗斯") {
-            debugger
-        }
         for (const related of rel) {
             const entry = levelDict[related];
             if (!entry) {
@@ -89,7 +86,7 @@ function link(levelData: prodData.LevelEntry[]) {
 
 link(data.value);
 
-console.log(data.value.forEach((e) => console.log(e.page, e.main.page, e, e.main)));
+// console.log(data.value.forEach((e) => console.log(e.page, e.main.page, e, e.main)));
 
 // 使用响应式以便于后续添加
 const Grouping = reactive({
@@ -312,6 +309,7 @@ const groupingFunctions = {
                 group: convByVar({ hans: "米麦", hant: "米麥" }),
                 list: entries.filter(entry =>
                     entry.type === "共创" || entry.type === "官方" && entry.num > 94
+                    || entry.type === "活动" || entry.type === "饭制"
                 )
             }
         ]
@@ -339,6 +337,14 @@ const groupingFunctions = {
             {
                 group: variantedType("共创"),
                 list: entries.filter(entry => entry.type === "共创")
+            },
+            {
+                group: variantedType("活动"),
+                list: entries.filter(entry => entry.type === "活动")
+            },
+            {
+                group: variantedType("饭制"),
+                list: entries.filter(entry => entry.type === "饭制")
             }
         ]
     },
@@ -429,7 +435,8 @@ const groupingFunctions = {
 
 const sortingFunctions = {
     num: (a: LevelEntry, b: LevelEntry): number => {
-        return a.type === b.type ? a.num - b.num : a.type === "官方" ? -1 : 1;
+        const ord = ["官方", "共创", "饭制", "活动"];
+        return ord.indexOf(a.type) - ord.indexOf(b.type) || a.num - b.num;
     },
     name: (a: LevelEntry, b: LevelEntry): number => {
         return a.name.localeCompare(b.name);
@@ -637,12 +644,12 @@ const LEV = convByVar({ hans: "关", hant: "關" });
     <template v-else>
         <template v-if="grouping2 === 'none'">
             <template v-for="group in <Group[]>displayData">
-                <div class="navbox-group navbox-cell">
+                <div class="navbox-group navbox-cell" v-if="group.list.length > 0">
                     <span class="navbox-group-flex-inner" :title="`${rautospace(group.list.length)}${LEV}`">
                         {{ group.group }}
                     </span>
                 </div>
-                <div :class="'navbox-list navbox-cell ' + oddEven()">
+                <div :class="'navbox-list navbox-cell ' + oddEven()" v-if="group.list.length > 0">
                     <h-list :levels="group.list"
                             :uses-mw-native-popup="usesMwNativePopup"
                             :shows-birthday="showsBirthday"

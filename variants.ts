@@ -17,10 +17,14 @@ export function getVariantedLevelName(name: string) {
     return variantedLevelNames.get(name) || name;
 }
 
-export function variantedType(type: "官方" | "共创") {
+export function variantedType(type: "官方" | "共创" | "饭制" | "活动") {
     if (type === "官方") {
         return "官方";
     } else {
-        return convByVar({ hans: "共创", hant: "共創" });
+        return {
+            "共创": convByVar({ hans: "共创", hant: "共創" }),
+            "饭制": convByVar({ hans: "饭制", hant: "飯製" }),
+            "活动": convByVar({ hans: "活动", hant: "活動" })
+        }[type];
     }
 }

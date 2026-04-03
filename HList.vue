@@ -89,14 +89,19 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
             @touchstart="focusLevel(level)"
             @focus="focusLevel(level)"
             :class="isCurrentPage(level.page) ? 'mw-selflink selflink' : ''"
-            :style=" {fontWeight: followsMain && level.main === level ? 'bold' : ''} "
+            :style=" {fontWeight: followsMain && (level as LevelEntry & {main: LevelEntry}).main === level ? 'bold' : ''} "
             :title="usesMwNativePopup ? extractNameFromEntry(level) : undefined"
             >
                 {{ extractNameFromEntry(level) }}{{ showsBirthday && todayIsBirthday(level) ? '🎂' : '' }}
             </a>
             <popup-vue v-if="focusedLevel === level" :process="(div) => processPopup(level, div)">
                 <span style="font-weight: bold;">
-                    {{ `${level.type === '官方' ? 'Lv.' : 'Co.'}${level.num} ${extractNameFromEntry(level)} ${'★'.repeat(level.stars)}` }}
+                    {{ `${ {
+                        '官方': 'Lv.',
+                        '共创': 'Co.',
+                        '饭制': 'Fan.',
+                        '活动': 'Sp.'
+                    }[level.type] || '??' }${level.num}${level.versyb ? '[' + level.versyb + ']' : ''} ${extractNameFromEntry(level)} ${(level.type === '活动' ? '😃' : '★').repeat(level.stars)}` }}
                 </span><br>
                 {{ `${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎` }}
                 <br>

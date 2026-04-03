@@ -19,10 +19,11 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
         formatversion: 2,
         tables: "Level, Version",
         fields: "\
-Level.name_zh = name, Level.num = num, Level._pageName = page, Level.type = type, Level.stars = stars, \
+Level.name_zh = name, Level.alias = alias, Level.num = num, Level.version_symbol = versyb, Level._pageName = page, Level.type = type, Level.stars = stars, \
 Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer, \
 Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.date = inDate",
-        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创') AND Level._pageName NOT LIKE '%（旧）'",
+// 饭制关卡即将到来，请耐心
+        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创' OR Level.type = '活动') AND Level._pageName NOT LIKE '%（旧）'",
         join_on: "Level.first_came_version = Version._pageName",
         limit: 500
     });
@@ -32,6 +33,8 @@ Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.da
     const data = res.cargoquery.map(item => {
         return {            
             num: Number(item.title.num),
+            versyb: item.title.versyb,
+            alias: item.title.alias && item.title.alias !== "" ? item.title.alias.split(REL_SEP) : [],
             stars: Number(item.title.stars),
             inVer: item.title.inVer,
             remVer: item.title.remVer,
@@ -196,14 +199,17 @@ export async function hotPurge(): Promise<{ levels: string[] | null, data: Level
 export interface LevelEntry {
     /** 带繁简转换的中文名 */
     name: string;
+    /** 别称 */
+    alias: string[];
     /** 序号 */
     num: number;
+    versyb: string;
     /** 页面名 */
     page: string;
     /** 星数 */
     stars: number;
     /** 类型 */
-    type: "共创" | "官方";
+    type: "共创" | "官方" | '活动' | '饭制';
     /** 首次出现版本 */
     inVer: string;
     /** 移除版本 */
