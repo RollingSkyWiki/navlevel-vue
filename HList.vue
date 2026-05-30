@@ -101,7 +101,8 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
                         '共创': 'Co.',
                         '饭制': 'Fan.',
                         '活动': 'Sp.'
-                    }[level.type] || '??' }${level.num}${level.versyb ? '[' + level.versyb + ']' : ''} ${extractNameFromEntry(level)} ${(level.type === '活动' ? '😃' : '★').repeat(level.stars)}` }}
+                    }[level.type] || '??' }${level.num}${level.versyb ? '[' + level.versyb + ']' : ''} ${extractNameFromEntry(level)} ${level.en !== level.page ? level.en : ""}
+${(level.type === '活动' ? '😃' : '★').repeat(level.stars)}` }}
                 </span><br>
                 {{ `${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎` }}
                 <br>
@@ -112,6 +113,12 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
                 <span v-else style="font-size: 140%;">
                     {{ difficulty(level.difficulty as [number, number]) }}
                 </span>
+                <br/>
+                <span style="font-weight: bold;">{{ level.songType?.join("/") || "未知" }}</span>
+                &nbsp;
+                <span v-if="level.authors">by</span>
+                &nbsp;
+                <span v-if="level.authors" style="font-weight: bold;"> {{level.authors?.join("&") ?? "" }}</span>
                 <br/>
                 <a :href="'/wiki/' + level.inVer">{{ level.inVer }}</a>{{ `(${level.inDate || '????-??-??'})${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}` }}
             </popup-vue>

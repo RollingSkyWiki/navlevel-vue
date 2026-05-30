@@ -19,7 +19,7 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
         formatversion: 2,
         tables: "Level, Version",
         fields: "\
-Level.name_zh = name, Level.alias = alias, Level.num = num, Level.version_symbol = versyb, Level._pageName = page, Level.type = type, Level.stars = stars, \
+Level.name_zh = name, Level.name_en = en, Level.alias = alias, Level.num = num, Level.version_symbol = versyb, Level._pageName = page, Level.type = type, Level.stars = stars, \
 Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer, \
 Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.date = inDate",
 // 饭制关卡即将到来，请耐心
@@ -27,10 +27,20 @@ Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.da
         join_on: "Level.first_came_version = Version._pageName",
         limit: 500
     });
-    if (!res.cargoquery) {
+    const res2 = await (new mw.Api).get({
+        action: 'cargoquery',
+        formatversion: 2,
+        tables: "Music",
+        fields: "\
+Music.level = level, Music.author = author, Music.type = type",
+        where: "NOT Music.unused",
+        limit: 500
+    });
+    if (!res.cargoquery || !res2.cargoquery) {
         return null;
     }
     const data = res.cargoquery.map(item => {
+        const music = res2.cargoquery.find(it => it.title.level.split("、").includes(item.title.page));
         return {            
             num: Number(item.title.num),
             versyb: item.title.versyb,
@@ -43,9 +53,13 @@ Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.da
             type: item.title.type,
             page: item.title.page,
             name: item.title.name,
+            en: item.title.en,
             award: item.title.award,
             dia: Number(item.title.dia),
-            rel: item.title.rel && item.title.rel !== "" ? item.title.rel.split(REL_SEP) : []
+            rel: item.title.rel && item.title.rel !== "" ? item.title.rel.split(REL_SEP) : [],
+            authors: music && music.title.author.trim() !== "" && music.title.author.split("、"),
+            songType: music && music.title.type.trim() !== "" && music.title.type.split("、"),
+
         } satisfies LevelEntry;
     });
     if (data.length < REJECT_THRESHOLD) {
@@ -199,6 +213,8 @@ export async function hotPurge(): Promise<{ levels: string[] | null, data: Level
 export interface LevelEntry {
     /** 带繁简转换的中文名 */
     name: string;
+
+    en: string;
     /** 别称 */
     alias: string[];
     /** 序号 */
@@ -209,7 +225,7 @@ export interface LevelEntry {
     /** 星数 */
     stars: number;
     /** 类型 */
-    type: "共创" | "官方" | '活动' | '饭制';
+    type: "共创" | "官方" | "活动" | "饭制";
     /** 首次出现版本 */
     inVer: string;
     /** 移除版本 */
@@ -224,4 +240,7 @@ export interface LevelEntry {
     dia: number;
     /** 关卡的相关关卡列表，可能为空 */
     rel: string[];
+
+    authors?: string[];
+    songType?: string[];
 }
