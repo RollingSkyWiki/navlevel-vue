@@ -58,7 +58,7 @@ Music.level = level, Music.author = author, Music.type = type",
             dia: Number(item.title.dia),
             rel: item.title.rel && item.title.rel !== "" ? item.title.rel.split(REL_SEP) : [],
             authors: music && music.title.author.trim() !== "" && music.title.author.split("、"),
-            songType: music && music.title.type.trim() !== "" && music.title.type.split("、"),
+            songType: music && music.title.type.trim() !== '' ? music.title.type.split("、") : [],
 
         } satisfies LevelEntry;
     });

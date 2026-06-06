@@ -102,7 +102,7 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
                         '饭制': 'Fan.',
                         '活动': 'Sp.'
                     }[level.type] || '??' }${level.num}${level.versyb ? '[' + level.versyb + ']' : ''} ${extractNameFromEntry(level)} ${level.en !== level.page ? level.en : ""}
-${(level.type === '活动' ? '😃' : '★').repeat(level.stars)}` }}
+${(level.type === '活动' ? '😃' : '★').repeat(level.stars)}${level.plus ? '☆' : ''}` }}
                 </span><br>
                 {{ `${level.award === 'crown' ? '3👑 ' : level.award === 'present' ? '10🎁 ' : ''}${level.dia}💎` }}
                 <br>
