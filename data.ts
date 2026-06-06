@@ -21,9 +21,8 @@ export async function fetchData(): Promise<LevelEntry[] | null> {
         fields: "\
 Level.name_zh = name, Level.name_en = en, Level.alias = alias, Level.num = num, Level.version_symbol = versyb, Level._pageName = page, Level.type = type, Level.stars = stars, \
 Level.first_came_version = inVer, Level.removed_version = remVer, Level.restored_version = resVer, \
-Level.award = award, Level.diamonds = dia, Level.related_level = rel, Version.date = inDate",
-// 饭制关卡即将到来，请耐心
-        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创' OR Level.type = '活动') AND Level._pageName NOT LIKE '%（旧）'",
+Level.award = award, Level.diamonds = dia, Level.related_level = rel, Level.stars_plus = plus, Version.date = inDate",
+        where: "Level.stars IS NOT NULL AND(Level.type = '官方' OR Level.type = '共创' OR Level.type = '活动' OR Level.type = '饭制') AND Level._pageName NOT LIKE '%（旧）'",
         join_on: "Level.first_came_version = Version._pageName",
         limit: 500
     });
@@ -46,6 +45,7 @@ Music.level = level, Music.author = author, Music.type = type",
             versyb: item.title.versyb,
             alias: item.title.alias && item.title.alias !== "" ? item.title.alias.split(REL_SEP) : [],
             stars: Number(item.title.stars),
+            plus: item.title.plus,
             inVer: item.title.inVer,
             remVer: item.title.remVer,
             resVer: item.title.resVer,
@@ -163,6 +163,7 @@ export async function getDifficulty(): Promise<DiffcultyData | null> {
 export interface Options {
     grouping1: string;
     grouping2: string;
+    grouping3: string;
     sortingPriority: string[];
     direction: string;
     showsBirthday: boolean;
@@ -224,6 +225,7 @@ export interface LevelEntry {
     page: string;
     /** 星数 */
     stars: number;
+    plus: boolean;
     /** 类型 */
     type: "共创" | "官方" | "活动" | "饭制";
     /** 首次出现版本 */

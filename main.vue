@@ -1,3 +1,22 @@
+<script lang="ts">
+export type LevelEntry = prodData.LevelEntry
+    & { difficulty: [number, number] | [[number, number, string], [number, number, string]]}
+    & { main: LevelEntry };
+export interface Group {
+    group: string;
+    list: LevelEntry[];
+}
+
+export interface DoubleGroup {
+    group: string;
+    list: Group[];
+}
+
+export interface TripleGroup {
+    group: string;
+    list: DoubleGroup[];
+}
+</script>
 <script setup lang="ts">
 import { CdxCheckbox, CdxRadio } from '@wikimedia/codex';
 import { computed, onBeforeUpdate, onMounted, reactive, ref, watch } from 'vue';
@@ -10,14 +29,13 @@ import { convByVar } from './hanassist';
 import { variantedType } from './variants';
 import { autospace, rautospace } from './autospace';
 import { init } from "./expose";
+import Groups from './Groups.vue';
 
 // 使用相同的策略选择数据模块
 const dataModule = import.meta.env.DEV ? devData : prodData;
 const { saveOptionsToStorage, loadOptionsFromStorage } = dataModule;
 
-type LevelEntry = prodData.LevelEntry
-    & { difficulty: [number, number] | [[number, number, string], [number, number, string]]}
-    & { main: LevelEntry };
+
 
 const props = defineProps<{
     recvData: LevelEntry[];
@@ -95,6 +113,7 @@ const Grouping = reactive({
     // status: , // 地位（传统意义上的主线、奖励）
     // year: "年份",
     stars: convByVar({ hans: "星数", hant: "星數" }),
+    starsplus: convByVar({ hans: "同星级内位置", hant: "同星級內位置" }),
     version: convByVar({ hans: "版本", hant: "版本" }),
     present: convByVar({ hans: "奖励方式", hant: "獎勵方式" }),
     year: convByVar({ hans: "年份", hant: "年份" }),
@@ -152,6 +171,9 @@ const grouping1 = ref<Grouping>(
 );
 const grouping2 = ref<Grouping>(
     options?.grouping2 as Grouping ?? "stars"
+);
+const grouping3 = ref<Grouping>(
+    options?.grouping3 as Grouping ?? "starsplus"
 );
 
 const validateGrouping = (grouping: string, fallback: Grouping) => {
@@ -359,6 +381,26 @@ const groupingFunctions = {
             }
         });
     },
+    starsplus(entries: LevelEntry[]) {
+        const nonPlus = [], plus = [];
+        for (const entry of entries) {
+            (entry.plus ? plus : nonPlus).push(entry);
+        }
+        const result = [];
+        if (nonPlus.length > 0) {
+            result.push({
+                group: convByVar({ hans: "蓝星", hant: "藍星" }),
+                list: nonPlus
+            });
+        }
+        if (plus.length > 0) {
+            result.push({
+                group: convByVar({ hans: "紫星", hant: "紫星" }),
+                list: plus
+            });
+        }
+        return result;
+    },
     year(entries: LevelEntry[]) {
         const seenYears = new Set<string>();
         entries.forEach(entry => seenYears.add(entry.inDate.substring(0, 4)));
@@ -472,15 +514,7 @@ function group(entries: LevelEntry[], grouping: Grouping) {
     });
 }
 
-interface Group {
-    group: string;
-    list: LevelEntry[];
-}
 
-interface DoubleGroup {
-    group: string;
-    list: Group[];
-}
 
 /** 用于奇偶行的索引值，每行自增1 */
 let index = 0;
@@ -492,6 +526,7 @@ function saveOptions() {
     saveOptionsToStorage({
         grouping1: grouping1.value,
         grouping2: grouping2.value,
+        grouping3: grouping3.value,
         sortingPriority: sortingPriority.value,
         direction: direction.value,
         showsBirthday: showsBirthday.value,
@@ -505,12 +540,19 @@ function sort() {
     // 强制修改grouping2
     const vgrouping1 = validateGrouping(grouping1.value, "type") as Grouping;
     let vgrouping2 = validateGrouping(grouping2.value, "stars") as Grouping;
+    let vgrouping3 = validateGrouping(grouping3.value, "starsplus") as Grouping;
 
     if (vgrouping1 === vgrouping2 && vgrouping2 !== 'none') {
         grouping2.value = vgrouping2 = vgrouping1 === 'stars' ? 'type' : 'stars';
     }
+    if (vgrouping2 === vgrouping3 && vgrouping3 !== 'none') {
+        grouping3.value = vgrouping3 = vgrouping2 === 'starsplus' ? 'none' : 'starsplus';
+    }
     if (vgrouping1 === 'none') {
         grouping2.value = 'none';
+    }
+    if (grouping2.value === 'none') {
+        grouping3.value = 'none';
     }
     saveOptions();
     const dat = data.value
@@ -519,10 +561,20 @@ function sort() {
         return;
     } else if (vgrouping2 === 'none') {
         displayData.value = group(dat, vgrouping1);
-    } else {
+    } else if (vgrouping3 === 'none') {
         displayData.value = group(dat, vgrouping1)
             .map((g) => {
                 (g as unknown as DoubleGroup).list = group(g.list, vgrouping2);
+                return g;
+            });
+    } else {
+        displayData.value = group(dat, vgrouping1)
+            .map((g) => {
+                (g as unknown as DoubleGroup).list = group(g.list, vgrouping2)
+                    .map((sg) => {
+                        (sg as unknown as TripleGroup).list = group(sg.list, vgrouping3);
+                        return sg;
+                    });
                 return g;
             });
     }
@@ -606,6 +658,21 @@ const LEV = convByVar({ hans: "关", hant: "關" });
                 {{ Grouping[key] }}
             </cdx-radio>
         </div>
+        
+        <div class="navlevel-radio-group">
+            {{ convByVar({ hans: "三级分组：", hant: "三級分組："}) }}
+            <cdx-radio
+                v-for="(_, key) in Grouping"
+                v-model:model-value="grouping3"
+                :input-value="key"
+                name="grouping3"
+                :inline="true"
+                :disabled="(key !== grouping2) === (grouping2 === 'none') || (key !== grouping1) === (grouping1 === 'none')"
+                @update:model-value="sort"
+            >
+                {{ Grouping[key] }}
+            </cdx-radio>
+        </div>
         <div class="navlevel-radio-group">
             {{ convByVar({ hans: "排序：", hant: "排序："}) }}
             <priority-sort v-model="sortingPriority" :label-map="Sorting" @update:model-value="sort()"/>
@@ -642,51 +709,16 @@ const LEV = convByVar({ hans: "关", hant: "關" });
         </div>
     </template>
     <template v-else>
-        <template v-if="grouping2 === 'none'">
-            <template v-for="group in <Group[]>displayData">
-                <div class="navbox-group navbox-cell" v-if="group.list.length > 0">
-                    <span class="navbox-group-flex-inner" :title="`${rautospace(group.list.length)}${LEV}`">
-                        {{ group.group }}
-                    </span>
-                </div>
-                <div :class="'navbox-list navbox-cell ' + oddEven()" v-if="group.list.length > 0">
-                    <h-list :levels="group.list"
-                            :uses-mw-native-popup="usesMwNativePopup"
-                            :shows-birthday="showsBirthday"
-                            :process-popup="processPopup"
-                            :followsMain></h-list>
-                </div>
-            </template>
-        </template>
-        <template v-else>
-            <template v-for="group in <DoubleGroup[]>displayData">
-                <div v-if="group.list.length > 0" class="navbox-group navbox-cell">
-                    <span class="navbox-group-flex-inner" :title="`${rautospace(
-                        group.list.reduce((acc, cur) => acc + cur.list.length, 0)
-                    )}${LEV}`">
-                        {{ group.group }}
-                    </span>
-                </div>
-                <div v-if="group.list.length > 0"
-                    class="navbox navbox-list navbox-cell navbox-level-1 mobileplainbox">
-                    <template v-for="subgroup in group.list">
-                        <div v-if="subgroup.list.length > 0" class="navbox-group navbox-cell">
-                            <span class="navbox-group-flex-inner" :title="`${rautospace(subgroup.list.length)}${LEV}`">
-                                {{ subgroup.group }}
-                            </span>
-                        </div>
-                        <div v-if="subgroup.list.length > 0" :class="'navbox-list navbox-cell ' + oddEven()">
-                            <h-list :levels="subgroup.list"
-                                    :uses-mw-native-popup="usesMwNativePopup"
-                                    :shows-birthday="showsBirthday"
-                                    :process-popup="processPopup"
-                                    :followsMain
-                                    ></h-list>
-                        </div>
-                    
-                    </template>
-                </div>
-            </template> 
+        <template v-for="group in displayData">
+        <groups
+            :level="1"
+            :groupings="[grouping1, grouping2, grouping3]"
+            :group
+            :follows-main="followsMain"
+            :uses-mw-native-popup="usesMwNativePopup"
+            :shows-birthday="showsBirthday"
+            :process-popup="processPopup"
+            :odd-even="oddEven" />
         </template>
     </template>
     <!-- 模板里面不包含navbox这个根元素 -->
