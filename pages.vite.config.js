@@ -28,6 +28,6 @@ export default defineConfig(({mode}) => ({
   build: {
     minify: mode === 'production' ? 'esbuild' : false,
     emptyOutDir: true,
-    outDir: 'dist-pages'
+    outDir: 'docs'
   }
 }))
