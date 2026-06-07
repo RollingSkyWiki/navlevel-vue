@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import injectCSS from "vite-plugin-css-injected-by-js"
 
 export default defineConfig(({mode}) => ({
+  base: './',
   plugins: [
     vue(),
     injectCSS()
