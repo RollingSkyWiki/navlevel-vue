@@ -9,7 +9,7 @@ import { isCurrentPage as icp2 } from './polyfill/devdata';
 import { rautospace } from './autospace';
 import PopupVue from './Popup.vue';
 
-const isCurrentPage = import.meta.env.PROD ? icp1 : icp2;
+const isCurrentPage = (!__NO_MW__) ? icp1 : icp2;
 
 type LevelEntry = PartialLevelEntry & { difficulty: [number, number] | [[number, number, string], [number, number, string]] }
 
@@ -79,12 +79,13 @@ function difficulty(difficulty: [number, number] | [number, number, string]) {
         return `${numOrNull(difficulty[0])}/${numOrNull(difficulty[1])}`
     }
 }
+const _HOST = HOST
 
 </script>
 <template>
     <ul class="hlist">
         <li v-for="level in levels">
-            <a :href="isCurrentPage(level.page) ? undefined : `/wiki/${encodeURI(level.page)}`"
+            <a :href="isCurrentPage(level.page) ? undefined : (_HOST + `/wiki/${encodeURI(level.page)}`)"
             @mouseover="focusLevel(level)"
             @touchstart="focusLevel(level)"
             @focus="focusLevel(level)"

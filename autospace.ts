@@ -4,7 +4,7 @@
 
 // Wiki上有个叫做separate-space的小工具，通过检验它是否启用来判断是否需要插入空格
 // 已经准备好，说明用户开了这个小工具，所以用户的偏好是“需要插入空格”
-const needsSpace = import.meta.env.DEV
+const needsSpace = __NO_MW__
     ? new URLSearchParams(location.search).get("space") === "1"
     : mw.loader.getState("ext.gadget.separate-space") === "ready";
 

@@ -32,7 +32,7 @@ import { init } from "./expose";
 import Groups from './Groups.vue';
 
 // 使用相同的策略选择数据模块
-const dataModule = import.meta.env.DEV ? devData : prodData;
+const dataModule = __NO_MW__ ? devData : prodData;
 const { saveOptionsToStorage, loadOptionsFromStorage } = dataModule;
 
 

@@ -10,7 +10,7 @@ import { collectLevelVariants } from "./variants";
 
 async function initNavLevel() {
     // 开发环境使用模拟数据，生产环境使用真实数据
-    const dataModule = import.meta.env.DEV ? devData : prodData;
+    const dataModule = __NO_MW__ ? devData : prodData;
     
     const { getData, getValidLevels, getDifficulty } = dataModule;
     
@@ -68,7 +68,7 @@ async function initNavLevel() {
     }
 }
 
-if (import.meta.env.DEV)
+if (__NO_MW__)
     // 确保DOM加载完成后初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initNavLevel);

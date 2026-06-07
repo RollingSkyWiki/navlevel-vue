@@ -22,6 +22,7 @@
   "scripts": {
     "dev": "vite",
     "b": "vite build --mode production",
+    "bp": "vite build -c pages.vite.config.js --mode production",
     "cz": "bun scripts/convert-zh.js",
     "bt": "bun build test/testData.ts --outfile test/test.js"
   }

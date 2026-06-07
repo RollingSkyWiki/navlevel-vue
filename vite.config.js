@@ -10,7 +10,9 @@ export default defineConfig(({mode}) => ({
     mode === 'development' ? null : mwLoaderPlugin()  // 仅在生产构建时使用 mwLoaderPlugin
   ].filter(Boolean),
   define: {
-    'process.env.NODE_ENV': JSON.stringify(mode === 'production' ? 'production' : 'development')
+    'process.env.NODE_ENV': JSON.stringify(mode === 'production' ? 'production' : 'development'),
+    '__NO_MW__': mode === 'production' ? 'false' : 'true',
+    'HOST': "'https://rs.miraheze.org'"
   },
   server: {
     port: 3000,
