@@ -2,6 +2,8 @@
 
 [繁體中文](README-hant.md)
 
+[English Demo](https://rollingskywiki.github.io/navlevel-vue)
+
 此项目用于[滚动的天空Wiki](https://rs.miraheze.org/)的基于Cargo扩展（可不是Rust）的关卡导航框智能分组排序小工具。
 
 实验性功能，当前Wiki的Cargo数据中信息不全，有一些功能暂时无法支持。
