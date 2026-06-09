@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 import { type LevelEntry as PartialLevelEntry } from './data';
-import { convByVar } from './hanassist';
 import { getVariantedLevelName } from './variants';
 import { isCurrentPage as icp1 } from './data';
 import { isCurrentPage as icp2 } from './polyfill/devdata';
 import { rautospace } from './autospace';
 import PopupVue from './Popup.vue';
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
 
 const isCurrentPage = (!__NO_MW__) ? icp1 : icp2;
 
@@ -22,25 +24,16 @@ const props = defineProps<{
 }>();
 
 
-/**
- * 如果带繁简转换的中文名，则返回当前用户的语言环境下对应的名称
- * @param name 
- */
-function extractName(name: string) {
-    const match = name.match(/\-\{\s*zh\-hans:\s*(.*?)\s*;\s*zh\-hant:\s*(.*?)\s*\}\-/);
-    if (match) {
-        return convByVar({
-            hans: match[1],
-            hant: match[2]
-        })
-    } else {
-        return name;
-    }
-}
+
 
 function extractNameFromEntry(entry: LevelEntry) {
     // return entry.name ? extractName(entry.name) : entry.page;
     return getVariantedLevelName(entry.page);
+}
+
+function nameCanEn(entry: LevelEntry) {
+    
+    return computed(() => !locale.value.startsWith("zh") ? entry.en + (entry.versyb && entry.page.includes("（") ? ("[" + entry.versyb + "]") : "") : getVariantedLevelName(entry.page));
 }
 
 const focusedLevel = ref<LevelEntry | null>(null);
@@ -93,7 +86,7 @@ const _HOST = HOST
             :style=" {fontWeight: followsMain && (level as LevelEntry & {main: LevelEntry}).main === level ? 'bold' : ''} "
             :title="usesMwNativePopup ? extractNameFromEntry(level) : undefined"
             >
-                {{ extractNameFromEntry(level) }}{{ showsBirthday && todayIsBirthday(level) ? '🎂' : '' }}
+                {{ nameCanEn(level) }}{{ showsBirthday && todayIsBirthday(level) ? '🎂' : '' }}
             </a>
             <popup-vue v-if="focusedLevel === level" :process="(div) => processPopup(level, div)">
                 <span style="font-weight: bold;">
@@ -115,13 +108,13 @@ ${(level.type === '活动' ? '😃' : '★').repeat(level.stars)}${level.plus ? 
                     {{ difficulty(level.difficulty as [number, number]) }}
                 </span>
                 <br/>
-                <span style="font-weight: bold;">{{ level.songType?.join("/") || "未知" }}</span>
+                <span style="font-weight: bold;">{{ level.songType?.join("/") || t('common.unknown') }}</span>
                 &nbsp;
                 <span v-if="level.authors">by</span>
                 &nbsp;
                 <span v-if="level.authors" style="font-weight: bold;"> {{level.authors?.join("&") ?? "" }}</span>
                 <br/>
-                <a :href="'/wiki/' + level.inVer">{{ level.inVer }}</a>{{ `(${level.inDate || '????-??-??'})${convByVar({ hans: '版本加入游戏', hant: '版本加入遊戲'})}` }}
+                {{ t("hlist.versionAdded.pre") }}<a :href="'/wiki/' + level.inVer">{{ level.inVer }}</a>{{ `(${level.inDate || '????-??-??'})${t('hlist.versionAdded.post')}` }}
             </popup-vue>
         </li>
     </ul>

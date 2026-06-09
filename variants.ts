@@ -1,4 +1,4 @@
-import { convByVar } from "./hanassist";
+import { t } from "./locale";
 
 const variantedLevelNames = new Map<string, string>();
 
@@ -19,12 +19,12 @@ export function getVariantedLevelName(name: string) {
 
 export function variantedType(type: "官方" | "共创" | "饭制" | "活动") {
     if (type === "官方") {
-        return "官方";
+        return t('type.official');
     } else {
         return {
-            "共创": convByVar({ hans: "共创", hant: "共創" }),
-            "饭制": convByVar({ hans: "饭制", hant: "飯製" }),
-            "活动": convByVar({ hans: "活动", hant: "活動" })
+            "共创": t('type.cocreation'),
+            "饭制": t('type.fanmade'),
+            "活动": t('type.event')
         }[type];
     }
 }

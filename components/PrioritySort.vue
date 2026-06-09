@@ -1,8 +1,8 @@
 <template>
-  <div class="priority-sort" role="list" aria-label="优先级排序">
+  <div class="priority-sort" role="list" :aria-label="t('prioritySort.ariaLabel')">
     <template v-for="(item, index) in model" :key="item">
       <button type="button" class="priority-chip" @click="handleMove($event, index)"
-        @keydown="handleKeydown($event, index)" :aria-label="`${getDisplayText(item)}，点击设为第一优先级，左右箭头键移动一位`">
+        @keydown="handleKeydown($event, index)" :aria-label="t('prioritySort.ariaChip', { label: getDisplayText(item) })">
         {{ getDisplayText(item) }}
       </button>
       <span v-if="index < model.length - 1" class="priority-arrow" aria-hidden="true">></span>
@@ -12,6 +12,9 @@
 
 <script setup lang="ts">
 import { computed, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface Props {
   labelMap?: Record<string, string>;

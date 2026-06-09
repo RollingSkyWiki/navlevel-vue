@@ -1,4 +1,5 @@
 import Nav from "./Main.vue";
+import Header from "./Header.vue";
 
 // 静态导入两个模块，Vite会做tree-shaking
 import * as devData from './polyfill/devdata';
@@ -6,9 +7,16 @@ import * as prodData from './data';
 
 import "./polyfill/vue";
 
+import { i18n } from './locale';
+
 import { collectLevelVariants } from "./variants";
 
 async function initNavLevel() {
+    if (__NO_MW__) {
+        const $div = $("<div>").prependTo(document.body);
+        const app = Vue.createApp(Header);
+        app.use(i18n).mount($div[0]);
+    }
     // 开发环境使用模拟数据，生产环境使用真实数据
     const dataModule = __NO_MW__ ? devData : prodData;
     
@@ -59,7 +67,7 @@ async function initNavLevel() {
                 titleElement: navbox.querySelector('.navbox-title') || document.createElement('div')
             });
             
-            app.mount(navbox);
+            app.use(i18n).mount(navbox);
         });
         
     } catch (error) {

@@ -25,8 +25,7 @@ import * as prodData from './data';
 import HList from './HList.vue';
 import PrioritySort from './components/PrioritySort.vue';
 
-import { convByVar } from './hanassist';
-import { variantedType } from './variants';
+import { useI18n } from 'vue-i18n';
 import { autospace, rautospace } from './autospace';
 import { init } from "./expose";
 import Groups from './Groups.vue';
@@ -51,6 +50,8 @@ const props = defineProps<{
 const data = ref(props.recvData);
 const levels = ref(props.recvLevels);
 const diffculty = props.recvDifficulty;
+
+const { t } = useI18n();
 
 function mergeDifficulty(levelData: prodData.LevelEntry[], difficulty: prodData.DiffcultyData) {
     for (const level of levelData) {
@@ -104,22 +105,21 @@ function link(levelData: prodData.LevelEntry[]) {
 
 link(data.value);
 
+const ct = (s: string) => computed(() => t(s))
 // console.log(data.value.forEach((e) => console.log(e.page, e.main.page, e, e.main)));
 
 // 使用响应式以便于后续添加
 const Grouping = reactive({
-    type: convByVar({ hans: "类型", hant: "類型" }),
-    era: convByVar({ hans: "时期", hant: "時期" }),
-    // status: , // 地位（传统意义上的主线、奖励）
-    // year: "年份",
-    stars: convByVar({ hans: "星数", hant: "星數" }),
-    starsplus: convByVar({ hans: "同星级内位置", hant: "同星級內位置" }),
-    version: convByVar({ hans: "版本", hant: "版本" }),
-    present: convByVar({ hans: "奖励方式", hant: "獎勵方式" }),
-    year: convByVar({ hans: "年份", hant: "年份" }),
-    completeDifficulty: convByVar({ hans: "完成难度", hant: "完成難度" }),
-    perfectDifficulty: convByVar({ hans: "完美难度", hant: "完美難度" }),
-    none: convByVar({ hans: "无", hant: "無" })
+    type: ct('grouping.type'),
+    era: ct('grouping.era'),
+    stars: ct('grouping.stars'),
+    starsplus: ct('grouping.starsplus'),
+    version: ct('grouping.version'),
+    present: ct('grouping.present'),
+    year: ct('grouping.year'),
+    completeDifficulty: ct('grouping.completeDifficulty'),
+    perfectDifficulty: ct('grouping.perfectDifficulty'),
+    none: ct('grouping.none')
 });
 
 watch(Grouping, () => {
@@ -129,13 +129,13 @@ watch(Grouping, () => {
 type Grouping = keyof typeof Grouping;
 
 const Sorting = reactive({
-    num: convByVar({ hans: "编号", hant: "編號"}),
-    name: convByVar({ hans: "名称", hant: "名稱" }),
-    stars: convByVar({ hans: "星数", hant: "星數" }),
-    date: convByVar({ hans: "日期", hant: "日期" }),
-    completeDifficulty: convByVar({ hans: "完成难度", hant: "完成難度" }),
-    perfectDifficulty: convByVar({ hans: "完美难度", hant: "完美難度" }),
-    default: convByVar({ hans: "默认", hant: "預設" })
+    num: ct('sorting.num'),
+    name: ct('sorting.name'),
+    stars: ct('sorting.stars'),
+    date: ct('sorting.date'),
+    completeDifficulty: ct('sorting.completeDifficulty'),
+    perfectDifficulty: ct('sorting.perfectDifficulty'),
+    default: ct('sorting.default')
 });
 watch(Sorting, () => {
     Promise.resolve().then(sort);
@@ -144,8 +144,8 @@ watch(Sorting, () => {
 type Sorting = keyof typeof Sorting;
 
 const Direction = {
-    asc: "升序",
-    desc: "降序"
+    asc: ct('direction.asc'),
+    desc: ct('direction.desc')
 }
 
 type Direction = keyof typeof Direction;
@@ -316,22 +316,20 @@ const groupingFunctions = {
     era(entries: LevelEntry[]) {
         return [
             {
-                group: "辣椒",
+                group: t('era.chili'),
                 list: entries.filter(entry =>
-                    entry.type === "官方" && entry.num <= 7
+                    entry.type === "官方" && entry.inDate <= "2016-06-05"
                 ) // 俄方（8）
             },
             {
-                group: convByVar({ hans: "猎豹", hant: "獵豹" }),
+                group: t('era.cheetah'),
                 list: entries.filter(entry =>
-                    entry.type === "官方" && entry.num > 7 && entry.num <= 94
+                    entry.type === "官方" && entry.inDate >= "2016-06-06" && entry.inDate <= "2020-07-01"
                 )
             },
             {
-                group: convByVar({ hans: "米麦", hant: "米麥" }),
-                list: entries.filter(entry =>
-                    entry.type === "共创" || entry.type === "官方" && entry.num > 94
-                    || entry.type === "活动" || entry.type === "饭制"
+                group: t('era.minimax'),
+                list: entries.filter(entry => entry.inDate > "2020-07-01"
                 )
             }
         ]
@@ -353,19 +351,19 @@ const groupingFunctions = {
     type(entries: LevelEntry[]) {
         return [
             {
-                group: "官方",
+                group: t('type.official'),
                 list: entries.filter(entry => entry.type === "官方")
             },
             {
-                group: variantedType("共创"),
+                group: t('type.cocreation'),
                 list: entries.filter(entry => entry.type === "共创")
             },
             {
-                group: variantedType("活动"),
+                group: t('type.event'),
                 list: entries.filter(entry => entry.type === "活动")
             },
             {
-                group: variantedType("饭制"),
+                group: t('type.fanmade'),
                 list: entries.filter(entry => entry.type === "饭制")
             }
         ]
@@ -376,7 +374,7 @@ const groupingFunctions = {
         const stars = Array.from(seenStars).sort((a, b) => a - b);
         return stars.map(star => {
             return {
-                group: rautospace(star.toString()) + "星",
+                group: rautospace(star.toString()) + t('stars.star', star),
                 list: entries.filter(entry => entry.stars === star)
             }
         });
@@ -389,13 +387,13 @@ const groupingFunctions = {
         const result = [];
         if (nonPlus.length > 0) {
             result.push({
-                group: convByVar({ hans: "蓝星", hant: "藍星" }),
+                group: t('stars.blueStar'),
                 list: nonPlus
             });
         }
         if (plus.length > 0) {
             result.push({
-                group: convByVar({ hans: "紫星", hant: "紫星" }),
+                group: t('stars.purpleStar'),
                 list: plus
             });
         }
@@ -421,21 +419,21 @@ const groupingFunctions = {
         const unknown = entries.filter(entry => !["crown", "present", "none"].includes(entry.award))
         const groups = [
             {
-                group: "皇冠",
+                group: t('present.crown'),
                 list: entries.filter(entry => entry.award === "crown"),
             },
             {
-                group: "神秘箱",
+                group: t('present.mysteryBox'),
                 list: entries.filter(entry => entry.award === "present"),
             },
             {
-                group: convByVar({ hans: "无", hant: "無" }),
+                group: t('present.none'),
                 list: entries.filter(entry => entry.award === "none"),
             }
         ];
         if (unknown.length > 0) {
             groups.push({
-                group: convByVar({ hans: "未知", hant: "未知" }),
+                group: t('present.unknown'),
                 list: unknown
             });
         }
@@ -589,25 +587,19 @@ async function purge() {
     if (pLevels) {
         levels.value = pLevels;
     } else {
-        mw.notify(convByVar({
-            hans: "获取合法关卡列表失败。",
-            hant: "獲取合法關卡列表失敗。"
-        }), { type: 'error' });
+        mw.notify(t('notify.fetchLevelsFailed'), { type: 'error' });
     }
     if (pData) {
         // @ts-expect-error 这里会对data带来副作用
         data.value = mergeDifficulty(pData, pDifficulty);
         link(data.value);
     } else {
-        mw.notify(convByVar({
-            hans: `获取关卡${autospace("Cargo")}数据失败。`,
-            hant: `獲取關卡${autospace("Cargo")}數據失敗。`
-        }), { type: 'error' });
+        mw.notify(t('notify.fetchCargoFailed', { cargo: autospace("Cargo") }), { type: 'error' });
     }
     if (pLevels || pData) {
-        mw?.notify?.(convByVar({
-            hans: `数据已更新。${rautospace(data.value.length)}条数据记录，${rautospace(levels.value.length)}个关卡。`,
-            hant: `數據已更新。${rautospace(data.value.length)}條數據記錄，${rautospace(levels.value.length)}個關卡。`
+        mw?.notify?.(t('notify.dataUpdated', {
+            records: rautospace(data.value.length),
+            levels: rautospace(levels.value.length)
         }));
     }
     sort();
@@ -616,23 +608,19 @@ async function purge() {
 onBeforeUpdate(() => {
     resetIndex();
 })
-const LEV = convByVar({ hans: "关", hant: "關" });
+const LEV = t('common.level');
 
 </script>
 
 <template>
     <div ref="markerBefore"></div>
     <div class="navbox-above navbox-cell navbox-sole-row">
-        {{ convByVar({
-            hans: `本智能排序为实验性功能。当前获取到${autospace(data.length)}个关卡的数据。`,
-            hant: `本智能排序為實驗性功能。當前獲取到${autospace(data.length)}個關卡的數據。`
-           })
-        }}
-        （<a @click="purge" @keydown.enter.prevent="purge" @keydown.space.prevent="purge" role="button" tabindex="0">{{ convByVar({ hans: "清除缓存", hant: "清除快取"}) }}</a>）
+        {{ t('info.experimental', { count: autospace(data.length) }) }}
+        （<a @click="purge" @keydown.enter.prevent="purge" @keydown.space.prevent="purge" role="button" tabindex="0">{{ t('actions.clearCache') }}</a>）
     </div>
     <div class="navbox-above navbox-cell navbox-sole-row navlevel-nav">
         <div class="navlevel-radio-group">
-            {{ convByVar({ hans: "一级分组：", hant: "一級分組："}) }}
+            {{ t('labels.primaryGroup') }}
             <cdx-radio
                 v-for="(_, key) in Grouping"
                 v-model:model-value="grouping1"
@@ -643,7 +631,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
             >{{ Grouping[key] }}</cdx-radio>
         </div>
         <div class="navlevel-radio-group">
-            {{ convByVar({ hans: "二级分组：", hant: "二級分組："}) }}
+            {{ t('labels.secondaryGroup') }}
             <cdx-radio
                 v-for="(_, key) in Grouping"
                 v-model:model-value="grouping2"
@@ -660,7 +648,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
         </div>
         
         <div class="navlevel-radio-group">
-            {{ convByVar({ hans: "三级分组：", hant: "三級分組："}) }}
+            {{ t('labels.tertiaryGroup') }}
             <cdx-radio
                 v-for="(_, key) in Grouping"
                 v-model:model-value="grouping3"
@@ -674,7 +662,7 @@ const LEV = convByVar({ hans: "关", hant: "關" });
             </cdx-radio>
         </div>
         <div class="navlevel-radio-group">
-            {{ convByVar({ hans: "排序：", hant: "排序："}) }}
+            {{ t('labels.sort') }}
             <priority-sort v-model="sortingPriority" :label-map="Sorting" @update:model-value="sort()"/>
         </div>
         <div class="navlevel-radio-group">
@@ -690,10 +678,10 @@ const LEV = convByVar({ hans: "关", hant: "關" });
             </cdx-radio>
         </div>
         <div class="navlevel-radio-group">
-            <cdx-checkbox :inline="true" v-model:model-value="usesMwNativePopup">{{ convByVar({ hans: "显示MediaWiki原生弹出框", hant: "顯示MediaWiki原生彈出框" })}}</cdx-checkbox>
-            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday" @update:model-value="saveOptions()">{{ convByVar({ hans: "标记生日在今日（UTC+8）的关卡", hant: "標記生日在今日（按UTC+8）的關卡" })}}</cdx-checkbox>
-            <cdx-checkbox :inline="true" v-model:model-value="followsMain" @update:model-value="saveOptions();sort()">{{ followsMainAvailable ? convByVar({ hans: "绑定同族关卡", hant: "綁定同族關卡" })
-                : convByVar({ hans: "高亮主线（困难）关卡", hant: "高亮主線（困難）關卡"})}}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="usesMwNativePopup">{{ t('options.showMwPopup') }}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="showsBirthday" @update:model-value="saveOptions()">{{ t('options.showBirthday') }}</cdx-checkbox>
+            <cdx-checkbox :inline="true" v-model:model-value="followsMain" @update:model-value="saveOptions();sort()">{{ followsMainAvailable ? t('options.bindFamily')
+                : t('options.highlightMain') }}</cdx-checkbox>
         </div>
     </div><!--
     <div class="navbox-above navbox-sole-row">

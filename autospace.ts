@@ -1,3 +1,6 @@
+import { i18n } from "./locale";
+
+
 /**
  * 自动决定是否在西文/数字与中文之间插入空格
  */
@@ -9,13 +12,13 @@ const needsSpace = __NO_MW__
     : mw.loader.getState("ext.gadget.separate-space") === "ready";
 
 export function autospace(text: string | number) {
-    return needsSpace ? " " + text + " " : text;
+    return needsSpace || i18n.global.locale.value === "en" ? " " + text + " " : text;
 }
 
 export function lautospace(text: string | number) {
-    return needsSpace ? " " + text : text;
+    return needsSpace || i18n.global.locale.value === "en" ? " " + text : text;
 }
 
 export function rautospace(text: string | number) {
-    return needsSpace ? text + " " : text;
+    return (needsSpace || i18n.global.locale.value === "en") ? text + " " : text;
 }

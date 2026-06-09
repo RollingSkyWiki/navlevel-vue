@@ -17,10 +17,11 @@
     "chinese-conv": "^1.0.1",
     "types-mediawiki": "^2.0.0",
     "vue": "^3.5.24",
-    "vue-component-type-helpers": "^3.1.4"
+    "vue-component-type-helpers": "^3.1.4",
+    "vue-i18n": "^11.4.5"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite -c pages.vite.config.js",
     "b": "vite build --mode production",
     "bp": "vite build -c pages.vite.config.js --mode production",
     "cz": "bun scripts/convert-zh.js",
