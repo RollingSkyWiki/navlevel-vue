@@ -280,8 +280,11 @@ function compare(a: LevelEntry, b: LevelEntry) {
     return 0;
 }
 
-function unwrapCanBeArray(canBeArray: any, i: number)  {
-    return Array.isArray(canBeArray) ? canBeArray[i] : canBeArray;
+
+/** 以第i项做检测，若为数组返回值，否则返回原值 */
+function unwrapCanBeNestedArray(canBeNestedArray: [number, number] | [number, number, string][], i: number) {
+    const it = canBeNestedArray[i];
+    return Array.isArray(it) ? it : canBeNestedArray as [number, number];
 }
 /**
  * 
@@ -290,7 +293,7 @@ function unwrapCanBeArray(canBeArray: any, i: number)  {
  */
 function intDifficultyOf(entry: LevelEntry, i: number) {
     const diff = entry.difficulty;
-    const rawComplete = unwrapCanBeArray(diff[i], 0);
+    const rawComplete = unwrapCanBeNestedArray(diff, 0)[i];
     if (!rawComplete) {
         return entry.stars;
     } else if (typeof rawComplete === "string") {
@@ -302,7 +305,7 @@ function intDifficultyOf(entry: LevelEntry, i: number) {
 
 function diffcultyOf(entry: LevelEntry, i: number) {
     const diff = entry.difficulty;
-    const rawComplete = unwrapCanBeArray(diff[i], 0);
+    const rawComplete = unwrapCanBeNestedArray(diff, 0)[i];
     if (!rawComplete) {
         return entry.stars - 0.01; // 保证这些未填入数据的关卡难度值在最小的之前
     } else if (typeof rawComplete === "string") {

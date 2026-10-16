@@ -1,8 +1,6 @@
-[繁體中文](README-hant.md)
+[简体中文](README.md)
 
 此項目用於[滾動的天空Wiki](https://rs.miraheze.org/)的基於Cargo擴展（可不是Rust）的關卡導航框智能分組排序小工具。
-
-實驗性功能，當前Wiki的Cargo數據中信息不全，有一些功能暫時無法支持。
 
 如果您是繁體中文用戶且發現有個別詞語未適配，請創建Issue或者PR。
 
